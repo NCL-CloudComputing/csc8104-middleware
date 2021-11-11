@@ -157,4 +157,17 @@ public class Customer implements Serializable {
         result = 31 * result + (getState() != null ? getState().hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", birthDate=" + birthDate +
+                ", state='" + state + '\'' +
+                '}';
+    }
 }

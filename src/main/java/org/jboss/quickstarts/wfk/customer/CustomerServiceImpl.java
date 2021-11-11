@@ -137,7 +137,7 @@ public class CustomerServiceImpl implements CustomerService{
      *
      * <p>Validates the data in the provided Customer object using a CustomerValidator object.<p/>
      *
-     * @param customer The Contact object to be passed as an update to the application database
+     * @param customer The Customer object to be passed as an update to the application database
      * @return The Customer object that has been successfully updated in the application database
      * @throws ConstraintViolationException, ValidationException, Exception
      */
@@ -163,7 +163,7 @@ public class CustomerServiceImpl implements CustomerService{
             }
         }
 
-        // Either update the contact or add it if it can't be found.
+        // Either update the customer or add it if it can't be found.
         return crud.update(customer);
     }
 

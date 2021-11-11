@@ -1,12 +1,13 @@
-package org.jboss.quickstarts.wfk.customer;
+package org.jboss.quickstarts.wfk.hotel;
 
 
 import io.swagger.annotations.*;
 import org.jboss.quickstarts.wfk.area.InvalidAreaCodeException;
 import org.jboss.quickstarts.wfk.contact.UniqueEmailException;
+
+import org.jboss.quickstarts.wfk.customer.CustomerService;
 import org.jboss.quickstarts.wfk.util.RestServiceException;
 import org.jboss.resteasy.annotations.cache.Cache;
-
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * <p>This class produces a RESTful service exposing the functionality of {@link CustomerService}.</p>
+ * <p>This class produces a RESTful service exposing the functionality of {@link HotelService}.</p>
  *
  * <p>The Path annotation defines this as a REST Web Service using JAX-RS.</p>
  *
@@ -36,25 +37,25 @@ import java.util.logging.Logger;
  * <p>The full path for accessing endpoints defined herein is: api/contacts/*</p>
  *
  * @author Chenjie Li
- * @see CustomerService
+ * @see HotelService
  * @see javax.ws.rs.core.Response
  */
 
-@Path("/customer")
+@Path("/hotel")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Api(value = "/customers", description = "Operations about customers")
+@Api(value = "/hotels", description = "Operations about hotels")
 @Stateless
-public class CustomerRestService {
+public class HotelRestService {
     @Inject
     private @Named("logger")
     Logger log;
 
     @Inject
-    private CustomerService service;
+    private HotelService service;
 
     /**
-     * <p>Return all the Contacts.  They are sorted alphabetically by name.</p>
+     * <p>Return all the Hotels.  They are sorted alphabetically by name.</p>
      *
      * <p>The url may optionally include query parameters specifying a Contact's name</p>
      *
@@ -63,91 +64,52 @@ public class CustomerRestService {
      * @return A Response containing a list of Contacts
      */
     @GET
-    @ApiOperation(value = "Fetch all Customer", notes = "Returns a JSON array of all stored Customer objects.")
-    public Response retrieveAllCustomers(@QueryParam("firstname") String firstname, @QueryParam("lastname") String lastname) {
+    @ApiOperation(value = "Fetch all Hotel", notes = "Returns a JSON array of all stored Hotel objects.")
+    public Response retrieveAllCustomers(@QueryParam("hName") String hName) {
         //Create an empty collection to contain the intersection of Consumers to be returned
-        List<Customer> customers;
+        List<Hotel> hotels = null;
 
-        if(firstname == null && lastname == null) {
-            customers = service.findAllOrderedByName();
-        } else if(lastname == null) {
-            customers = service.findAllByFirstName(firstname);
-        } else if(firstname == null) {
-            customers = service.findAllByLastName(lastname);
-        } else {
-            customers = service.findAllByFirstName(firstname);
-            customers.retainAll(service.findAllByLastName(lastname));
-        }
-
-        return Response.ok(customers).build();
-    }
-
-    /**
-     * <p>Search for and return a Customer identified by email address.<p/>
-     *
-     * <p>Path annotation includes very simple regex to differentiate between email addresses and Ids.
-     * <strong>DO NOT</strong> attempt to use this regex to validate email addresses.</p>
-     *
-     *
-     * @param email The string parameter value provided as a Customer's email
-     * @return A Response containing a single Contact
-     */
-    @GET
-    @Cache
-    @Path("/email/{email:.+[%40|@].+}")
-    @ApiOperation(
-            value = "Fetch a Customer by Email",
-            notes = "Returns a JSON representation of the Customer object with the provided email."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message ="Customer found"),
-            @ApiResponse(code = 404, message = "Customer with email not found")
-    })
-    public Response retrieveCustomersByEmail(
-            @ApiParam(value = "Email of Customer to be fetched", required = true)
-            @PathParam("email")
-                    String email) {
-
-        Customer customer;
         try {
-            customer = service.findByEmail(email);
+            hotels = service.findAllOrderedByName(hName);
         } catch (NoResultException e) {
-            // Verify that the contact exists. Return 404, if not present.
-            throw new RestServiceException("No Customer with the email " + email + " was found!", Response.Status.NOT_FOUND);
+            // Verify that the hotel exists. Return 404, if not present.
+            throw new RestServiceException("No Customer with the name " + hName + " was found!", Response.Status.NOT_FOUND);
         }
-        return Response.ok(customer).build();
-    }
+            return Response.ok(hotels).build();
+        }
+
+
 
     /**
-     * <p>Search for and return a Customer identified by id.</p>
+     * <p>Search for and return a Hotel identified by id.</p>
      *
-     * @param id The long parameter value provided as a Customer's id
-     * @return A Response containing a single Customer
+     * @param id The long parameter value provided as a Hotel's id
+     * @return A Response containing a single Hotel
      */
     @GET
     @Cache
     @Path("/{id:[0-9]+}")
     @ApiOperation(
-            value = "Fetch a Customer by id ",
-            notes = "Returns a JSON representation of the Customer object with the provided id."
+            value = "Fetch a Hotel by id ",
+            notes = "Returns a JSON representation of the Hotel object with the provided id."
     )
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message ="Customer found"),
-            @ApiResponse(code = 404, message = "Customer with id not found")
+            @ApiResponse(code = 200, message ="Hotel found"),
+            @ApiResponse(code = 404, message = "Hotel with id not found")
     })
-    public Response retrieveContactById(
+    public Response retrieveHotelById(
             @ApiParam(value = "Id of Customer to be fetched", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
-                    long id) {
+                    long id){
 
-        Customer customer = service.findById(id);
-        if (customer == null) {
+        Hotel hotel = service.findById(id);
+        if (hotel == null) {
             // Verify that the contact exists. Return 404, if not present.
-            throw new RestServiceException("No Contact with the id " + id + " was found!", Response.Status.NOT_FOUND);
+            throw new RestServiceException("No Hotel with the id " + id + " was found!", Response.Status.NOT_FOUND);
         }
-        log.info("findById " + id + ": found Contact = " + customer.toString());
+        log.info("findById " + id + ": found Hotel = " + hotel.toString());
 
-        return Response.ok(customer).build();
+        return Response.ok(hotel).build();
     }
 
 
@@ -155,8 +117,8 @@ public class CustomerRestService {
      * <p>Creates a new contact from the values provided. Performs validation and will return a JAX-RS response with
      * either 201 (Resource created) or with a map of fields, and related errors.</p>
      *
-     * @param customer The Contact object, constructed automatically from JSON input, to be <i>created</i> via
-     * {@link CustomerService#create(Customer)}
+     * @param hotel The Hotel object, constructed automatically from JSON input, to be <i>created</i> via
+     * {@link HotelService#create(Hotel)}
      * @return A Response indicating the outcome of the create operation
      */
     @SuppressWarnings("unused")
@@ -170,21 +132,21 @@ public class CustomerRestService {
     })
     public Response createContact(
             @ApiParam(value = "JSON representation of Customer object to be added to the database", required = true)
-                    Customer customer) {
+                    Hotel hotel) {
 
 
-        if (customer == null) {
+        if (hotel == null) {
             throw new RestServiceException("Bad Request", Response.Status.BAD_REQUEST);
         }
 
         Response.ResponseBuilder builder;
 
         try {
-            // Go add the new Customer.
-            service.create(customer);
+            // Go add the new Hotel.
+            service.create(hotel);
 
-            // Create a "Resource Created" 201 Response and pass the customer back in case it is needed.
-            builder = Response.status(Response.Status.CREATED).entity(customer);
+            // Create a "Resource Created" 201 Response and pass the hotel back in case it is needed.
+            builder = Response.status(Response.Status.CREATED).entity(hotel);
 
 
         } catch (ConstraintViolationException ce) {
@@ -210,7 +172,7 @@ public class CustomerRestService {
             throw new RestServiceException(e);
         }
 
-        log.info("createContact completed. Customer = " + customer.toString());
+        log.info("createContact completed. Hotel = " + hotel.toString());
         return builder.build();
     }
 
@@ -218,8 +180,8 @@ public class CustomerRestService {
      * <p>Updates the customer with the ID provided in the database. Performs validation, and will return a JAX-RS response
      * with either 200 (ok), or with a map of fields, and related errors.</p>
      *
-     * @param customer The Contact object, constructed automatically from JSON input, to be <i>updated</i> via
-     * {@link CustomerService#update(Customer)}
+     * @param hotel The Contact object, constructed automatically from JSON input, to be <i>updated</i> via
+     * {@link HotelService#update(Hotel)}
      * @param id The long parameter value provided as the id of the Contact to be updated
      * @return A Response indicating the outcome of the create operation
      */
@@ -238,13 +200,13 @@ public class CustomerRestService {
             @PathParam("id")
                     long id,
             @ApiParam(value = "JSON representation of Customer object to be updated in the database", required = true)
-                    Customer customer) {
+                    Hotel hotel) {
 
-        if (customer == null || customer.getId() == null) {
+        if (hotel == null || hotel.gethId() == null) {
             throw new RestServiceException("Invalid Contact supplied in request body", Response.Status.BAD_REQUEST);
         }
 
-        if (customer.getId() != null && customer.getId() != id) {
+        if (hotel.gethId() != null && hotel.gethId() != id) {
             // The client attempted to update the read-only Id. This is not permitted.
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("id", "The Customer ID in the request body must match that of the Customer being updated");
@@ -252,7 +214,7 @@ public class CustomerRestService {
                     responseObj, Response.Status.CONFLICT);
         }
 
-        if (service.findById(customer.getId()) == null) {
+        if (service.findById(hotel.gethId()) == null) {
             // Verify that the customer exists. Return 404, if not present.
             throw new RestServiceException("No customer with the id " + id + " was found!", Response.Status.NOT_FOUND);
         }
@@ -261,10 +223,10 @@ public class CustomerRestService {
 
         try {
             // Apply the changes the Customer.
-            service.update(customer);
+            service.update(hotel);
 
             // Create an OK Response and pass the customer back in case it is needed.
-            builder = Response.ok(customer);
+            builder = Response.ok(hotel);
 
 
         } catch (ConstraintViolationException ce) {
@@ -290,42 +252,42 @@ public class CustomerRestService {
             throw new RestServiceException(e);
         }
 
-        log.info("updateContact completed. Customer = " + customer.toString());
+        log.info("updateContact completed. Hotel = " + hotel.toString());
         return builder.build();
     }
 
     /**
-     * <p>Deletes a customer using the ID provided. If the ID is not present then nothing can be deleted.</p>
+     * <p>Deletes a hotel using the ID provided. If the ID is not present then nothing can be deleted.</p>
      *
      * <p>Will return a JAX-RS response with either 204 NO CONTENT or with a map of fields, and related errors.</p>
      *
-     * @param id The Long parameter value provided as the id of the Customer to be deleted
+     * @param id The Long parameter value provided as the id of the Hotel to be deleted
      * @return A Response indicating the outcome of the delete operation
      */
     @DELETE
     @Path("/{id:[0-9]+}")
-    @ApiOperation(value = "Delete a Contact from the database")
+    @ApiOperation(value = "Delete a Hotel from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "The contact has been successfully deleted"),
-            @ApiResponse(code = 400, message = "Invalid Contact id supplied"),
-            @ApiResponse(code = 404, message = "Contact with id not found"),
+            @ApiResponse(code = 204, message = "The hotel has been successfully deleted"),
+            @ApiResponse(code = 400, message = "Invalid Hotel id supplied"),
+            @ApiResponse(code = 404, message = "Hotel with id not found"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
     public Response deleteContact(
-            @ApiParam(value = "Id of Contact to be deleted", allowableValues = "range[0, infinity]", required = true)
+            @ApiParam(value = "Id of Hotel to be deleted", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id) {
 
         Response.ResponseBuilder builder;
 
-        Customer customer = service.findById(id);
-        if (customer == null) {
+        Hotel hotel = service.findById(id);
+        if (hotel == null) {
             // Verify that the customer exists. Return 404, if not present.
             throw new RestServiceException("No Customer with the id " + id + " was found!", Response.Status.NOT_FOUND);
         }
 
         try {
-            service.delete(customer);
+            service.delete(hotel);
 
             builder = Response.noContent();
 
@@ -333,7 +295,7 @@ public class CustomerRestService {
             // Handle generic exceptions
             throw new RestServiceException(e);
         }
-        log.info("deleteContact completed. Customer = " + customer.toString());
+        log.info("deleteContact completed. Hotel = " + hotel.toString());
         return builder.build();
     }
 }

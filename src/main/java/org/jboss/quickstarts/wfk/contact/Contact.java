@@ -160,4 +160,17 @@ public class Contact implements Serializable {
     public int hashCode() {
         return Objects.hashCode(email);
     }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", birthDate=" + birthDate +
+                ", state='" + state + '\'' +
+                '}';
+    }
 }
