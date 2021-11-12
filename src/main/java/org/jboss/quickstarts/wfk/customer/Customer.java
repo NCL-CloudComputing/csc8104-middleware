@@ -1,7 +1,9 @@
 package org.jboss.quickstarts.wfk.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jboss.quickstarts.wfk.booking.Booking;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +13,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * this is the pojo for the user
@@ -69,6 +72,11 @@ public class Customer implements Serializable {
 
     @Column(name = "state")
     private String state;
+
+    @JsonIgnore
+    @JoinColumn
+    @OneToMany()
+    private List<Booking> bookings;
 
     public Long getId() {
         return id;

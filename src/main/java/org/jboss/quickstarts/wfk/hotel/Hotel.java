@@ -62,13 +62,7 @@ public class Hotel implements Serializable {
     private String addr;
 
 
-    public String getState() {
-        return state;
-    }
 
-    public void setState(String state) {
-        this.state = state;
-    }
 
     @Column(name = "type")
     private String type;
@@ -77,6 +71,13 @@ public class Hotel implements Serializable {
     private String state;
 
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
     public Long gethId() {
         return hId;
     }

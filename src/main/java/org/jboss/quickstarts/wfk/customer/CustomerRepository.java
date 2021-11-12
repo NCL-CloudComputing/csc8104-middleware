@@ -1,8 +1,6 @@
 package org.jboss.quickstarts.wfk.customer;
 
 
-import org.jboss.quickstarts.wfk.contact.Contact;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -69,17 +67,17 @@ public class CustomerRepository {
     }
 
     /**
-     * <p>Returns a list of Contact objects, specified by a String firstName.<p/>
+     * <p>Returns a list of Customer objects, specified by a String firstName.<p/>
      *
-     * @param firstName The firstName field of the Contacts to be returned
-     * @return The Contacts with the specified firstName
+     * @param firstName The firstName field of the Customers to be returned
+     * @return The Customers with the specified firstName
      */
     List<Customer> findAllByFirstName(String firstName) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Customer> criteria = cb.createQuery(Customer.class);
         Root<Customer> customer = criteria.from(Customer.class);
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new feature in JPA 2.0.
-        // criteria.select(contact).where(cb.equal(contact.get(Contact_.firstName), firstName));
+        // criteria.select(customer).where(cb.equal(customer.get(Customer_.firstName), firstName));
         criteria.select(customer).where(cb.equal(customer.get("firstName"), firstName));
         return em.createQuery(criteria).getResultList();
     }
@@ -87,7 +85,7 @@ public class CustomerRepository {
     /**
      * <p>Returns a single Customer object, specified by a String lastName.<p/>
      *
-     * @param lastName The lastName field of the Contacts to be returned
+     * @param lastName The lastName field of the Customers to be returned
      * @return The Customers with the specified lastName
      */
     List<Customer> findAllByLastName(String lastName) {
@@ -95,7 +93,7 @@ public class CustomerRepository {
         CriteriaQuery<Customer> criteria = cb.createQuery(Customer.class);
         Root<Customer> customer = criteria.from(Customer.class);
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new feature in JPA 2.0.
-        // criteria.select(contact).where(cb.equal(contact.get(Contact_.lastName), lastName));
+        // criteria.select(customer).where(cb.equal(customer.get(Customer_.lastName), lastName));
         criteria.select(customer).where(cb.equal(customer.get("lastName"), lastName));
         return em.createQuery(criteria).getResultList();
     }
@@ -113,9 +111,9 @@ public class CustomerRepository {
      * @throws ConstraintViolationException, ValidationException, Exception
      */
     Customer create(Customer customer) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("ContactRepository.create() - Creating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerRepository.create() - Creating " + customer.getFirstName() + " " + customer.getLastName());
 
-        // Write the contact to the database.
+        // Write the customer to the database.
         em.persist(customer);
 
         return customer;
@@ -130,28 +128,28 @@ public class CustomerRepository {
      *
      * <p>merge(Object) however must have an object with the @Id already generated.</p>
      *
-     * @param customer The Customer object to be merged with an existing Contact
-     * @return The Contact that has been merged
+     * @param customer The Customer object to be merged with an existing Customer
+     * @return The Customer that has been merged
      * @throws ConstraintViolationException, ValidationException, Exception
      */
     Customer update(Customer customer) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("ContactRepository.update() - Updating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerRepository.update() - Updating " + customer.getFirstName() + " " + customer.getLastName());
 
-        // Either update the contact or add it if it can't be found.
+        // Either update the customer or add it if it can't be found.
         em.merge(customer);
 
         return customer;
     }
 
     /**
-     * <p>Deletes the provided Contact object from the application database if found there</p>
+     * <p>Deletes the provided Customer object from the application database if found there</p>
      *
-     * @param customer The Contact object to be removed from the application database
-     * @return The Contact object that has been successfully removed from the application database; or null
+     * @param customer The Customer object to be removed from the application database
+     * @return The Customer object that has been successfully removed from the application database; or null
      * @throws Exception
      */
     Customer delete(Customer customer) throws Exception {
-        log.info("ContactRepository.delete() - Deleting " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerRepository.delete() - Deleting " + customer.getFirstName() + " " + customer.getLastName());
 
         if (customer.getId() != null) {
             /*
@@ -170,7 +168,7 @@ public class CustomerRepository {
             em.remove(em.merge(customer));
 
         } else {
-            log.info("ContactRepository.delete() - No ID was found so can't Delete.");
+            log.info("BookingRepository.delete() - No ID was found so can't Delete.");
         }
 
         return customer;

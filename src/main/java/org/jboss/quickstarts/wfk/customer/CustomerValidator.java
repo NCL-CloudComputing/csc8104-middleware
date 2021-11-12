@@ -37,7 +37,7 @@ public class CustomerValidator {
      * @throws ConstraintViolationException If Bean Validation errors exist
      * @throws ValidationException If contact with the same email already exists
      */
-    void validateContact(Customer customer) throws ConstraintViolationException, ValidationException {
+    void validateCustomer(Customer customer) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
         Set<ConstraintViolation<Customer>> violations = validator.validate(customer);
 

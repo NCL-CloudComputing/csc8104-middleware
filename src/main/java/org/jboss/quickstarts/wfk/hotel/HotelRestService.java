@@ -5,7 +5,7 @@ import io.swagger.annotations.*;
 import org.jboss.quickstarts.wfk.area.InvalidAreaCodeException;
 import org.jboss.quickstarts.wfk.contact.UniqueEmailException;
 
-import org.jboss.quickstarts.wfk.customer.CustomerService;
+
 import org.jboss.quickstarts.wfk.util.RestServiceException;
 import org.jboss.resteasy.annotations.cache.Cache;
 
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  * <p>It is Stateless to "inform the container that this RESTful web service should also be treated as an EJB and allow
  * transaction demarcation when accessing the database." - Antonio Goncalves</p>
  *
- * <p>The full path for accessing endpoints defined herein is: api/contacts/*</p>
+ * <p>The full path for accessing endpoints defined herein is: api/hotels/*</p>
  *
  * @author Chenjie Li
  * @see HotelService
@@ -57,11 +57,9 @@ public class HotelRestService {
     /**
      * <p>Return all the Hotels.  They are sorted alphabetically by name.</p>
      *
-     * <p>The url may optionally include query parameters specifying a Contact's name</p>
      *
-     * <p>Examples: <pre>GET api/contacts?firstname=John</pre>, <pre>GET api/contacts?firstname=John&lastname=Smith</pre></p>
-     *
-     * @return A Response containing a list of Contacts
+
+     * @return A Response containing a list of Hotels
      */
     @GET
     @ApiOperation(value = "Fetch all Hotel", notes = "Returns a JSON array of all stored Hotel objects.")
@@ -104,7 +102,7 @@ public class HotelRestService {
 
         Hotel hotel = service.findById(id);
         if (hotel == null) {
-            // Verify that the contact exists. Return 404, if not present.
+            // Verify that the hotel exists. Return 404, if not present.
             throw new RestServiceException("No Hotel with the id " + id + " was found!", Response.Status.NOT_FOUND);
         }
         log.info("findById " + id + ": found Hotel = " + hotel.toString());
@@ -114,7 +112,7 @@ public class HotelRestService {
 
 
     /**
-     * <p>Creates a new contact from the values provided. Performs validation and will return a JAX-RS response with
+     * <p>Creates a new hotel from the values provided. Performs validation and will return a JAX-RS response with
      * either 201 (Resource created) or with a map of fields, and related errors.</p>
      *
      * @param hotel The Hotel object, constructed automatically from JSON input, to be <i>created</i> via
@@ -130,7 +128,7 @@ public class HotelRestService {
             @ApiResponse(code = 409, message = "Customer supplied in request body conflicts with an existing Customer"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response createContact(
+    public Response createHotel(
             @ApiParam(value = "JSON representation of Customer object to be added to the database", required = true)
                     Hotel hotel) {
 
@@ -172,7 +170,7 @@ public class HotelRestService {
             throw new RestServiceException(e);
         }
 
-        log.info("createContact completed. Hotel = " + hotel.toString());
+        log.info("createHotel completed. Hotel = " + hotel.toString());
         return builder.build();
     }
 
@@ -180,9 +178,9 @@ public class HotelRestService {
      * <p>Updates the customer with the ID provided in the database. Performs validation, and will return a JAX-RS response
      * with either 200 (ok), or with a map of fields, and related errors.</p>
      *
-     * @param hotel The Contact object, constructed automatically from JSON input, to be <i>updated</i> via
+     * @param hotel The hotel object, constructed automatically from JSON input, to be <i>updated</i> via
      * {@link HotelService#update(Hotel)}
-     * @param id The long parameter value provided as the id of the Contact to be updated
+     * @param id The long parameter value provided as the id of the hotel to be updated
      * @return A Response indicating the outcome of the create operation
      */
     @PUT
@@ -195,7 +193,7 @@ public class HotelRestService {
             @ApiResponse(code = 409, message = "Customer details supplied in request body conflict with another existing Customer"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response updateContact(
+    public Response updateHotel(
             @ApiParam(value = "Id of Customer to be updated", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id,
@@ -203,7 +201,7 @@ public class HotelRestService {
                     Hotel hotel) {
 
         if (hotel == null || hotel.gethId() == null) {
-            throw new RestServiceException("Invalid Contact supplied in request body", Response.Status.BAD_REQUEST);
+            throw new RestServiceException("Invalid hotel supplied in request body", Response.Status.BAD_REQUEST);
         }
 
         if (hotel.gethId() != null && hotel.gethId() != id) {
@@ -241,7 +239,7 @@ public class HotelRestService {
             // Handle the unique constraint violation
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("email", "That email is already used, please use a unique email");
-            throw new RestServiceException("Contact details supplied in request body conflict with another Customer",
+            throw new RestServiceException("hotel details supplied in request body conflict with another Customer",
                     responseObj, Response.Status.CONFLICT, e);
         } catch (InvalidAreaCodeException e) {
             Map<String, String> responseObj = new HashMap<>();
@@ -252,7 +250,7 @@ public class HotelRestService {
             throw new RestServiceException(e);
         }
 
-        log.info("updateContact completed. Hotel = " + hotel.toString());
+        log.info("updatehotel completed. Hotel = " + hotel.toString());
         return builder.build();
     }
 
@@ -273,7 +271,7 @@ public class HotelRestService {
             @ApiResponse(code = 404, message = "Hotel with id not found"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response deleteContact(
+    public Response deleteHotel(
             @ApiParam(value = "Id of Hotel to be deleted", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id) {
@@ -295,7 +293,7 @@ public class HotelRestService {
             // Handle generic exceptions
             throw new RestServiceException(e);
         }
-        log.info("deleteContact completed. Hotel = " + hotel.toString());
+        log.info("deleteHotel completed. Hotel = " + hotel.toString());
         return builder.build();
     }
 }

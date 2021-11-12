@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * <p>It is Stateless to "inform the container that this RESTful web service should also be treated as an EJB and allow
  * transaction demarcation when accessing the database." - Antonio Goncalves</p>
  *
- * <p>The full path for accessing endpoints defined herein is: api/contacts/*</p>
+ * <p>The full path for accessing endpoints defined herein is: api/Customers/*</p>
  *
  * @author Chenjie Li
  * @see CustomerService
@@ -54,13 +54,10 @@ public class CustomerRestService {
     private CustomerService service;
 
     /**
-     * <p>Return all the Contacts.  They are sorted alphabetically by name.</p>
+     * <p>Return all the Customers.  They are sorted alphabetically by name.</p>
      *
-     * <p>The url may optionally include query parameters specifying a Contact's name</p>
-     *
-     * <p>Examples: <pre>GET api/contacts?firstname=John</pre>, <pre>GET api/contacts?firstname=John&lastname=Smith</pre></p>
-     *
-     * @return A Response containing a list of Contacts
+
+     * @return A Response containing a list of Customers
      */
     @GET
     @ApiOperation(value = "Fetch all Customer", notes = "Returns a JSON array of all stored Customer objects.")
@@ -90,7 +87,7 @@ public class CustomerRestService {
      *
      *
      * @param email The string parameter value provided as a Customer's email
-     * @return A Response containing a single Contact
+     * @return A Response containing a single Customer
      */
     @GET
     @Cache
@@ -112,7 +109,7 @@ public class CustomerRestService {
         try {
             customer = service.findByEmail(email);
         } catch (NoResultException e) {
-            // Verify that the contact exists. Return 404, if not present.
+            // Verify that the Customer exists. Return 404, if not present.
             throw new RestServiceException("No Customer with the email " + email + " was found!", Response.Status.NOT_FOUND);
         }
         return Response.ok(customer).build();
@@ -135,27 +132,27 @@ public class CustomerRestService {
             @ApiResponse(code = 200, message ="Customer found"),
             @ApiResponse(code = 404, message = "Customer with id not found")
     })
-    public Response retrieveContactById(
+    public Response retrieveCustomerById(
             @ApiParam(value = "Id of Customer to be fetched", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id) {
 
         Customer customer = service.findById(id);
         if (customer == null) {
-            // Verify that the contact exists. Return 404, if not present.
-            throw new RestServiceException("No Contact with the id " + id + " was found!", Response.Status.NOT_FOUND);
+            // Verify that the Customer exists. Return 404, if not present.
+            throw new RestServiceException("No Customer with the id " + id + " was found!", Response.Status.NOT_FOUND);
         }
-        log.info("findById " + id + ": found Contact = " + customer.toString());
+        log.info("findById " + id + ": found Customer = " + customer.toString());
 
         return Response.ok(customer).build();
     }
 
 
     /**
-     * <p>Creates a new contact from the values provided. Performs validation and will return a JAX-RS response with
+     * <p>Creates a new Customer from the values provided. Performs validation and will return a JAX-RS response with
      * either 201 (Resource created) or with a map of fields, and related errors.</p>
      *
-     * @param customer The Contact object, constructed automatically from JSON input, to be <i>created</i> via
+     * @param customer The Customer object, constructed automatically from JSON input, to be <i>created</i> via
      * {@link CustomerService#create(Customer)}
      * @return A Response indicating the outcome of the create operation
      */
@@ -168,7 +165,7 @@ public class CustomerRestService {
             @ApiResponse(code = 409, message = "Customer supplied in request body conflicts with an existing Customer"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response createContact(
+    public Response createBooking(
             @ApiParam(value = "JSON representation of Customer object to be added to the database", required = true)
                     Customer customer) {
 
@@ -210,7 +207,7 @@ public class CustomerRestService {
             throw new RestServiceException(e);
         }
 
-        log.info("createContact completed. Customer = " + customer.toString());
+        log.info("createCustomer completed. Customer = " + customer.toString());
         return builder.build();
     }
 
@@ -218,9 +215,9 @@ public class CustomerRestService {
      * <p>Updates the customer with the ID provided in the database. Performs validation, and will return a JAX-RS response
      * with either 200 (ok), or with a map of fields, and related errors.</p>
      *
-     * @param customer The Contact object, constructed automatically from JSON input, to be <i>updated</i> via
+     * @param customer The Customer object, constructed automatically from JSON input, to be <i>updated</i> via
      * {@link CustomerService#update(Customer)}
-     * @param id The long parameter value provided as the id of the Contact to be updated
+     * @param id The long parameter value provided as the id of the Customer to be updated
      * @return A Response indicating the outcome of the create operation
      */
     @PUT
@@ -233,7 +230,7 @@ public class CustomerRestService {
             @ApiResponse(code = 409, message = "Customer details supplied in request body conflict with another existing Customer"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response updateContact(
+    public Response updateCustomer(
             @ApiParam(value = "Id of Customer to be updated", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id,
@@ -241,7 +238,7 @@ public class CustomerRestService {
                     Customer customer) {
 
         if (customer == null || customer.getId() == null) {
-            throw new RestServiceException("Invalid Contact supplied in request body", Response.Status.BAD_REQUEST);
+            throw new RestServiceException("Invalid Customer supplied in request body", Response.Status.BAD_REQUEST);
         }
 
         if (customer.getId() != null && customer.getId() != id) {
@@ -279,7 +276,7 @@ public class CustomerRestService {
             // Handle the unique constraint violation
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("email", "That email is already used, please use a unique email");
-            throw new RestServiceException("Contact details supplied in request body conflict with another Customer",
+            throw new RestServiceException("Customer details supplied in request body conflict with another Customer",
                     responseObj, Response.Status.CONFLICT, e);
         } catch (InvalidAreaCodeException e) {
             Map<String, String> responseObj = new HashMap<>();
@@ -290,7 +287,7 @@ public class CustomerRestService {
             throw new RestServiceException(e);
         }
 
-        log.info("updateContact completed. Customer = " + customer.toString());
+        log.info("updateCustomer completed. Customer = " + customer.toString());
         return builder.build();
     }
 
@@ -304,15 +301,15 @@ public class CustomerRestService {
      */
     @DELETE
     @Path("/{id:[0-9]+}")
-    @ApiOperation(value = "Delete a Contact from the database")
+    @ApiOperation(value = "Delete a Customer from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "The contact has been successfully deleted"),
-            @ApiResponse(code = 400, message = "Invalid Contact id supplied"),
-            @ApiResponse(code = 404, message = "Contact with id not found"),
+            @ApiResponse(code = 204, message = "The Customer has been successfully deleted"),
+            @ApiResponse(code = 400, message = "Invalid Customer id supplied"),
+            @ApiResponse(code = 404, message = "Customer with id not found"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response deleteContact(
-            @ApiParam(value = "Id of Contact to be deleted", allowableValues = "range[0, infinity]", required = true)
+    public Response deleteCustomer(
+            @ApiParam(value = "Id of Customer to be deleted", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id) {
 
@@ -333,7 +330,7 @@ public class CustomerRestService {
             // Handle generic exceptions
             throw new RestServiceException(e);
         }
-        log.info("deleteContact completed. Customer = " + customer.toString());
+        log.info("deleteCustomer completed. Customer = " + customer.toString());
         return builder.build();
     }
 }

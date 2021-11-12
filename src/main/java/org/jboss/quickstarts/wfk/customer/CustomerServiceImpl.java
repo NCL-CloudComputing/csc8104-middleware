@@ -67,7 +67,7 @@ public class CustomerServiceImpl implements CustomerService{
      *
      * <p>If there is more than one Customer with the specified email, only the first encountered will be returned.<p/>
      *
-     * @param email The email field of the Contact to be returned
+     * @param email The email field of the Customer to be returned
      * @return The first Customer with the specified email
      */
     @Override
@@ -76,7 +76,7 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     /**
-     * <p>Returns a single Contact object, specified by a String firstName.<p/>
+     * <p>Returns a single Customer object, specified by a String firstName.<p/>
      *
      * @param firstName The firstName field of the Customer to be returned
      * @return The first Customer with the specified firstName
@@ -98,9 +98,9 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     /**
-     * <p>Writes the provided Contact object to the application database.<p/>
+     * <p>Writes the provided Customer object to the application database.<p/>
      *
-     * <p>Validates the data in the provided Contact object using a {@link CustomerValidator} object.<p/>
+     * <p>Validates the data in the provided Customer object using a {@link CustomerValidator} object.<p/>
      *
      * @param customer The Customer object to be written to the database using a {@link CustomerRepository} object
      * @return The Customer object that has been successfully written to the application database
@@ -108,10 +108,10 @@ public class CustomerServiceImpl implements CustomerService{
      */
     @Override
     public Customer create(Customer customer) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("ContactService.create() - Creating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerService.create() - Creating " + customer.getFirstName() + " " + customer.getLastName());
 
-        // Check to make sure the data fits with the parameters in the Contact model and passes validation.
-        validator.validateContact(customer);
+        // Check to make sure the data fits with the parameters in the Customer model and passes validation.
+        validator.validateCustomer(customer);
 
         //Create client service instance to make REST requests to upstream service
         ResteasyWebTarget target = client.target("http://ec2-18-119-125-232.us-east-2.compute.amazonaws.com/");
@@ -128,7 +128,7 @@ public class CustomerServiceImpl implements CustomerService{
             }
         }
 
-        // Write the contact to the database.
+        // Write the customer to the database.
         return crud.create(customer);
     }
 
@@ -143,10 +143,10 @@ public class CustomerServiceImpl implements CustomerService{
      */
     @Override
     public Customer update(Customer customer) throws ConstraintViolationException, ValidationException, Exception{
-        log.info("ContactService.update() - Updating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerService.update() - Updating " + customer.getFirstName() + " " + customer.getLastName());
 
-        // Check to make sure the data fits with the parameters in the Contact model and passes validation.
-        validator.validateContact(customer);
+        // Check to make sure the data fits with the parameters in the Customer model and passes validation.
+        validator.validateCustomer(customer);
 
         // Set client target location and define the proxy API class
         ResteasyWebTarget target = client.target("http://ec2-18-119-125-232.us-east-2.compute.amazonaws.com/");

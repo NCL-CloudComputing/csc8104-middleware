@@ -18,6 +18,8 @@ package org.jboss.quickstarts.wfk;
 
 
 import io.swagger.jaxrs.config.BeanConfig;
+//import org.jboss.quickstarts.wfk.booking.BookingRestService;
+import org.jboss.quickstarts.wfk.booking.BookingRestService;
 import org.jboss.quickstarts.wfk.contact.ContactRestService;
 import org.jboss.quickstarts.wfk.customer.CustomerRestService;
 import org.jboss.quickstarts.wfk.hotel.HotelRestService;
@@ -55,7 +57,7 @@ public class ContactServiceApplication extends Application {
         //Add additional RESTService containing packages here, separated by commas:
         // "org.jboss.quickstarts.wfk.contact," +
         // "org.jboss.quickstarts.wfk.other"
-        beanConfig.setResourcePackage("org.jboss.quickstarts.wfk.contact,org.jboss.quickstarts.wfk.customer,org.jboss.quickstarts.wfk.hotel");
+        beanConfig.setResourcePackage("org.jboss.quickstarts.wfk.contact,org.jboss.quickstarts.wfk.customer,org.jboss.quickstarts.wfk.hotel,org.jboss.quickstarts.wfk.booking");
         beanConfig.setScan(true);
 
         //Do not edit below
@@ -70,6 +72,7 @@ public class ContactServiceApplication extends Application {
         services.add(ContactRestService.class);
         services.add(CustomerRestService.class);
         services.add(HotelRestService.class);
+        services.add(BookingRestService.class);
 
         //Do not edit below
         services.add(RestServiceExceptionHandler.class);
