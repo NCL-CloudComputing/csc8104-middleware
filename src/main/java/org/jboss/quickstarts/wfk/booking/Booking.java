@@ -1,6 +1,9 @@
 package org.jboss.quickstarts.wfk.booking;
 
 
+import org.jboss.quickstarts.wfk.customer.Customer;
+import org.jboss.quickstarts.wfk.hotel.Hotel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -19,8 +22,8 @@ import java.util.Date;
 @Entity
 @NamedQueries({
         @NamedQuery(name = Booking.FIND_ALL, query = "SELECT a FROM Booking a ORDER BY a.orderDate DESC"),
-        @NamedQuery(name = Booking.FIND_BY_USERID, query = "SELECT a FROM Booking a WHERE a.userId = :userId"),
-        @NamedQuery(name = Booking.FIND_BY_HOTELID, query = "SELECT a FROM Booking a WHERE a.hotelId = :hotelId"),
+        @NamedQuery(name = Booking.FIND_BY_USERID, query = "SELECT a FROM Booking a WHERE a.cId = :cId"),
+        @NamedQuery(name = Booking.FIND_BY_HOTELID, query = "SELECT a FROM Booking a WHERE a.hId = :hId"),
         @NamedQuery(name = Booking.FIND_BY_ID, query = "SELECT a FROM Booking a WHERE a.id = :id")
 })
 @XmlRootElement
@@ -38,22 +41,31 @@ public class Booking implements Serializable {
 
     @NotNull
     @Column(name = "order_date")
-    @Temporal(TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date orderDate;
 
-    @NotNull
-    @Column(name = "user_id")
-    private Long userId;
+
 
     @NotNull
-    @Column(name = "hotel_id")
-    private Long hotelId;
-
     @Column(name = "qty_item")
-    private int qtyItem;
+    private Integer qtyItem;
 
     @Column(name = "tol_price")
-    private double tolPrice;
+    private Double tolPrice;
+
+    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @JoinColumn(name="customer_id")
+    private Customer customer;
+
+    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @JoinColumn(name="hotel_id")
+    private Hotel hotel;
+
+    @Column(name = "cId")
+    private Long cId;
+
+    @Column(name = "hId")
+    private Long hId;
 
     public Long getId() {
         return id;
@@ -71,36 +83,52 @@ public class Booking implements Serializable {
         this.orderDate = orderDate;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getHotelId() {
-        return hotelId;
-    }
-
-    public void setHotelId(Long hotelId) {
-        this.hotelId = hotelId;
-    }
-
-    public int getQtyItem() {
+    public Integer getQtyItem() {
         return qtyItem;
     }
 
-    public void setQtyItem(int qtyItem) {
+    public void setQtyItem(Integer qtyItem) {
         this.qtyItem = qtyItem;
     }
 
-    public double getTolPrice() {
+    public Double getTolPrice() {
         return tolPrice;
     }
 
-    public void setTolPrice(double tolPrice) {
+    public void setTolPrice(Double tolPrice) {
         this.tolPrice = tolPrice;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Hotel getHotel() {
+        return hotel;
+    }
+
+    public void setHotel(Hotel hotel) {
+        this.hotel = hotel;
+    }
+
+    public Long getcId() {
+        return cId;
+    }
+
+    public void setcId(Long cId) {
+        this.cId = cId;
+    }
+
+    public Long gethId() {
+        return hId;
+    }
+
+    public void sethId(Long hId) {
+        this.hId = hId;
     }
 
     @Override
@@ -110,26 +138,30 @@ public class Booking implements Serializable {
 
         Booking booking = (Booking) o;
 
-        if (getQtyItem() != booking.getQtyItem()) return false;
-        if (Double.compare(booking.getTolPrice(), getTolPrice()) != 0) return false;
         if (getId() != null ? !getId().equals(booking.getId()) : booking.getId() != null) return false;
         if (getOrderDate() != null ? !getOrderDate().equals(booking.getOrderDate()) : booking.getOrderDate() != null)
             return false;
-        if (getUserId() != null ? !getUserId().equals(booking.getUserId()) : booking.getUserId() != null) return false;
-        return getHotelId() != null ? getHotelId().equals(booking.getHotelId()) : booking.getHotelId() == null;
+        if (getQtyItem() != null ? !getQtyItem().equals(booking.getQtyItem()) : booking.getQtyItem() != null)
+            return false;
+        if (getTolPrice() != null ? !getTolPrice().equals(booking.getTolPrice()) : booking.getTolPrice() != null)
+            return false;
+        if (getCustomer() != null ? !getCustomer().equals(booking.getCustomer()) : booking.getCustomer() != null)
+            return false;
+        if (getHotel() != null ? !getHotel().equals(booking.getHotel()) : booking.getHotel() != null) return false;
+        if (getcId() != null ? !getcId().equals(booking.getcId()) : booking.getcId() != null) return false;
+        return gethId() != null ? gethId().equals(booking.gethId()) : booking.gethId() == null;
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = getId() != null ? getId().hashCode() : 0;
+        int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + (getOrderDate() != null ? getOrderDate().hashCode() : 0);
-        result = 31 * result + (getUserId() != null ? getUserId().hashCode() : 0);
-        result = 31 * result + (getHotelId() != null ? getHotelId().hashCode() : 0);
-        result = 31 * result + getQtyItem();
-        temp = Double.doubleToLongBits(getTolPrice());
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (getQtyItem() != null ? getQtyItem().hashCode() : 0);
+        result = 31 * result + (getTolPrice() != null ? getTolPrice().hashCode() : 0);
+        result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
+        result = 31 * result + (getHotel() != null ? getHotel().hashCode() : 0);
+        result = 31 * result + (getcId() != null ? getcId().hashCode() : 0);
+        result = 31 * result + (gethId() != null ? gethId().hashCode() : 0);
         return result;
     }
 
@@ -138,10 +170,12 @@ public class Booking implements Serializable {
         return "Booking{" +
                 "id=" + id +
                 ", orderDate=" + orderDate +
-                ", userId=" + userId +
-                ", hotelId=" + hotelId +
                 ", qtyItem=" + qtyItem +
                 ", tolPrice=" + tolPrice +
+                ", customer=" + customer +
+                ", hotel=" + hotel +
+                ", cId=" + cId +
+                ", hId=" + hId +
                 '}';
     }
 }

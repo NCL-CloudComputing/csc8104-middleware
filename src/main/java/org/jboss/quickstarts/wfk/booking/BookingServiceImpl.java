@@ -57,26 +57,26 @@ public class BookingServiceImpl implements BookingService{
     }
 
     /**
-     * <p>Returns a single Booking object, specified by a Long userId.</p>
+     * <p>Returns a single Booking object, specified by a Long customerId.</p>
      *
      *
-     * @param userId The userId field of the Booking to be returned
-     * @return The  Booking with the specified userId
+     * @param customerId The customerId field of the Booking to be returned
+     * @return The  Booking with the specified customerId
      */
     @Override
-    public Booking findByUserId(Long userId) {
-        return crud.findByUserId(userId);
+    public List<Booking> findByUserId(Long customerId) {
+        return crud.findByUserId(customerId);
     }
 
     /**
      * <p>Returns a single Booking object, specified by a Long hotelId.</p>
      *
      *
-     * @param hotelId The userId field of the Booking to be returned
+     * @param hotelId The customerId field of the Booking to be returned
      * @return The  Booking with the specified hotelId
      */
     @Override
-    public Booking findByHotelId(Long hotelId) {
+    public List<Booking> findByHotelId(Long hotelId) {
         return crud.findByHotelId(hotelId);
     }
 

@@ -21,10 +21,13 @@ import org.jboss.quickstarts.wfk.area.InvalidAreaCodeException;
 import org.jboss.quickstarts.wfk.util.RestServiceException;
 import org.jboss.resteasy.annotations.cache.Cache;
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Column;
 import javax.persistence.NoResultException;
+import javax.transaction.UserTransaction;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
@@ -64,6 +67,12 @@ public class BookingRestService {
     @Inject
     private BookingService service;
 
+    @Column(name = "cId")
+    private Long cId;
+
+    @Resource
+    UserTransaction transaction;
+
     /**
      * <p>Return all the Bookings.  They are sorted alphabetically by name.</p>
      *
@@ -87,33 +96,33 @@ public class BookingRestService {
     }
 
     /**
-     * <p>Search for and return a Booking identified by userId.</p>
+     * <p>Search for and return a Booking identified by customerId.</p>
      *
-     * @param userId The long parameter value provided as a Booking's userId
+     * @param customerId The long parameter value provided as a Booking's customerId
      * @return A Response containing a single Booking
      */
     @GET
     @Cache
-    @Path("/{userId:[0-9]+}")
+    @Path("/{customerId:[0-9]+}")
     @ApiOperation(
-            value = "Fetch a Booking by userId",
-            notes = "Returns a JSON representation of the Booking object with the provided userId."
+            value = "Fetch a Booking by customerId",
+            notes = "Returns a JSON representation of the Booking object with the provided customerId."
     )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message ="Booking found"),
-            @ApiResponse(code = 404, message = "Booking with userId not found")
+            @ApiResponse(code = 404, message = "Booking with customerId not found")
     })
     public Response retrieveBookingsByCustomerId(
             @ApiParam(value = "UserId of Booking to be fetched", allowableValues = "range[0, infinity]", required = true)
-            @PathParam("userId")
-            Long userId) {
+            @PathParam("customerId")
+            Long customerId) {
 
         Booking booking;
         try {
-            booking = service.findByUserId(userId);
+            booking = service.findByUserId(customerId);
         } catch (NoResultException e) {
             // Verify that the booking exists. Return 404, if not present.
-            throw new RestServiceException("No Booking with the userId " + userId + " was found!", Response.Status.NOT_FOUND);
+            throw new RestServiceException("No Booking with the customerId " + customerId + " was found!", Response.Status.NOT_FOUND);
         }
         return Response.ok(booking).build();
     }

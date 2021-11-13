@@ -2,9 +2,11 @@ package org.jboss.quickstarts.wfk.hotel;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.quickstarts.wfk.customer.Customer;
+import org.jboss.quickstarts.wfk.booking.Booking;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -12,6 +14,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @NamedQueries({
@@ -32,7 +36,7 @@ public class Hotel implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long hId;
 
-    @Min(0)
+
     @Column(name = "remaining_number")
     private Integer hRemainingNum;
 
@@ -61,14 +65,12 @@ public class Hotel implements Serializable {
     @Column(name = "addr")
     private String addr;
 
-
-
-
-    @Column(name = "type")
-    private String type;
-
     @Column(name = "state")
     private String state;
+
+    @JsonIgnore
+    @OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY,mappedBy="hotel")
+    private Set<Booking> bookings;
 
 
     public String getState() {
@@ -134,14 +136,6 @@ public class Hotel implements Serializable {
         this.addr = addr;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -158,7 +152,6 @@ public class Hotel implements Serializable {
         if (getEmail() != null ? !getEmail().equals(hotel.getEmail()) : hotel.getEmail() != null) return false;
         if (getPrice() != null ? !getPrice().equals(hotel.getPrice()) : hotel.getPrice() != null) return false;
         if (getAddr() != null ? !getAddr().equals(hotel.getAddr()) : hotel.getAddr() != null) return false;
-        if (getType() != null ? !getType().equals(hotel.getType()) : hotel.getType() != null) return false;
         return getState() != null ? getState().equals(hotel.getState()) : hotel.getState() == null;
     }
 
@@ -171,7 +164,6 @@ public class Hotel implements Serializable {
         result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
         result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
         result = 31 * result + (getAddr() != null ? getAddr().hashCode() : 0);
-        result = 31 * result + (getType() != null ? getType().hashCode() : 0);
         result = 31 * result + (getState() != null ? getState().hashCode() : 0);
         return result;
     }
@@ -186,7 +178,6 @@ public class Hotel implements Serializable {
                 ", email='" + email + '\'' +
                 ", price=" + price +
                 ", addr='" + addr + '\'' +
-                ", type='" + type + '\'' +
                 ", state='" + state + '\'' +
                 '}';
     }

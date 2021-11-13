@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * this is the pojo for the user
@@ -74,9 +75,8 @@ public class Customer implements Serializable {
     private String state;
 
     @JsonIgnore
-    @JoinColumn
-    @OneToMany()
-    private List<Booking> bookings;
+    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="customer")
+    private Set<Booking> bookings;
 
     public Long getId() {
         return id;

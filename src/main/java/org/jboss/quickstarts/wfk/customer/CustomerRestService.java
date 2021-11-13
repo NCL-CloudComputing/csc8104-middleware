@@ -3,15 +3,20 @@ package org.jboss.quickstarts.wfk.customer;
 
 import io.swagger.annotations.*;
 import org.jboss.quickstarts.wfk.area.InvalidAreaCodeException;
+import org.jboss.quickstarts.wfk.booking.Booking;
+import org.jboss.quickstarts.wfk.booking.BookingService;
 import org.jboss.quickstarts.wfk.contact.UniqueEmailException;
 import org.jboss.quickstarts.wfk.util.RestServiceException;
 import org.jboss.resteasy.annotations.cache.Cache;
 
 
+import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.*;
@@ -52,6 +57,12 @@ public class CustomerRestService {
 
     @Inject
     private CustomerService service;
+
+    @Inject
+    private BookingService bookingService;
+
+    @Resource
+    UserTransaction transaction;
 
     /**
      * <p>Return all the Customers.  They are sorted alphabetically by name.</p>
@@ -257,8 +268,21 @@ public class CustomerRestService {
         Response.ResponseBuilder builder;
 
         try {
+
+            //start a transaction
+            transaction.begin();
             // Apply the changes the Customer.
             service.update(customer);
+
+            List<Booking> bookings = bookingService.findByUserId(customer.getId());
+            if(bookings!=null&& bookings.size()>0){
+                for (int i = 0; i < bookings.size(); i++) {
+                    bookings.get(i).setCustomer(customer);
+                    bookingService.update(bookings.get(0));
+                }
+            }
+
+            transaction.commit();
 
             // Create an OK Response and pass the customer back in case it is needed.
             builder = Response.ok(customer);
@@ -283,8 +307,14 @@ public class CustomerRestService {
             responseObj.put("area_code", "The telephone area code provided is not recognised, please provide another");
             throw new RestServiceException("Bad Request", responseObj, Response.Status.BAD_REQUEST, e);
         } catch (Exception e) {
+            try {
+                transaction.rollback();
+            } catch (SystemException systemException) {
+                systemException.printStackTrace();
+            }
             // Handle generic exceptions
             throw new RestServiceException(e);
+
         }
 
         log.info("updateCustomer completed. Customer = " + customer.toString());

@@ -26,22 +26,22 @@ public interface BookingService {
     Booking findById(Long id);
 
     /**
-     * <p>Returns a single Booking object, specified by a Long userId.</p>
+     * <p>Returns a single Booking object, specified by a Long customerId.</p>
      *
      *
-     * @param userId The userId field of the Booking to be returned
-     * @return The  Booking with the specified userId
+     * @param customerId The customerId field of the Booking to be returned
+     * @return The  Booking with the specified customerId
      */
-    Booking findByUserId(Long userId);
+    List<Booking> findByUserId(Long customerId);
 
     /**
      * <p>Returns a single Booking object, specified by a Long hotelId.</p>
      *
      *
-     * @param hotelId The userId field of the Booking to be returned
+     * @param hotelId The customerId field of the Booking to be returned
      * @return The  Booking with the specified hotelId
      */
-    Booking findByHotelId(Long hotelId);
+    List<Booking> findByHotelId(Long hotelId);
 
 
     /**

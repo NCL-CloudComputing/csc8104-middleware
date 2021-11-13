@@ -57,23 +57,25 @@ public class BookingRepository {
     }
 
     /**
-     * <p>Returns a single Booking object, specified by a Long userId.<p/>
+     * <p>Returns a single Booking object, specified by a Long customerId.<p/>
      *
-     * @param userId The id field of the Booking to be returned
-     * @return The Booking with the specified userId
+     * @param cId The id field of the Booking to be returned
+     * @return The Booking with the specified customerId
      */
-    Booking findByUserId(Long userId) {
-        return em.find(Booking.class, userId);
+    List<Booking> findByUserId(Long cId) {
+        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_USERID, Booking.class).setParameter("cId",cId);
+        return query.getResultList();
     }
 
     /**
-     * <p>Returns a single Booking object, specified by a Long userId.<p/>
+     * <p>Returns a single Booking object, specified by a Long customerId.<p/>
      *
-     * @param hotelId The id field of the Booking to be returned
-     * @return The Booking with the specified userId
+     * @param hId The id field of the Booking to be returned
+     * @return The Booking with the specified customerId
      */
-    Booking findByHotelId(Long hotelId) {
-        return em.find(Booking.class, hotelId);
+    List<Booking> findByHotelId(Long hId) {
+        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_USERID, Booking.class).setParameter("hId",hId);
+        return query.getResultList();
     }
 
     /**
