@@ -1,6 +1,7 @@
 package org.jboss.quickstarts.wfk.booking;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jboss.quickstarts.wfk.customer.Customer;
 import org.jboss.quickstarts.wfk.hotel.Hotel;
 
@@ -22,8 +23,8 @@ import java.util.Date;
 @Entity
 @NamedQueries({
         @NamedQuery(name = Booking.FIND_ALL, query = "SELECT a FROM Booking a ORDER BY a.orderDate DESC"),
-        @NamedQuery(name = Booking.FIND_BY_USERID, query = "SELECT a FROM Booking a WHERE a.cId = :cId"),
-        @NamedQuery(name = Booking.FIND_BY_HOTELID, query = "SELECT a FROM Booking a WHERE a.hId = :hId"),
+        @NamedQuery(name = Booking.FIND_BY_USERID, query = "SELECT a FROM Booking a WHERE a.cusId = :cusId"),
+        @NamedQuery(name = Booking.FIND_BY_HOTELID, query = "SELECT a FROM Booking a WHERE a.hotId = :hotId"),
         @NamedQuery(name = Booking.FIND_BY_ID, query = "SELECT a FROM Booking a WHERE a.id = :id")
 })
 @XmlRootElement
@@ -45,7 +46,6 @@ public class Booking implements Serializable {
     private Date orderDate;
 
 
-
     @NotNull
     @Column(name = "qty_item")
     private Integer qtyItem;
@@ -53,19 +53,20 @@ public class Booking implements Serializable {
     @Column(name = "tol_price")
     private Double tolPrice;
 
-    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name="customer_id")
+    @JsonIgnore
     private Customer customer;
 
-    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name="hotel_id")
     private Hotel hotel;
 
-    @Column(name = "cId")
-    private Long cId;
+    @Column(name = "cusId")
+    private Long cusId;
 
-    @Column(name = "hId")
-    private Long hId;
+    @Column(name = "hotId")
+    private Long hotId;
 
     public Long getId() {
         return id;
@@ -115,20 +116,21 @@ public class Booking implements Serializable {
         this.hotel = hotel;
     }
 
-    public Long getcId() {
-        return cId;
+
+    public Long getCusId() {
+        return cusId;
     }
 
-    public void setcId(Long cId) {
-        this.cId = cId;
+    public void setCusId(Long cusId) {
+        this.cusId = cusId;
     }
 
-    public Long gethId() {
-        return hId;
+    public Long getHotId() {
+        return hotId;
     }
 
-    public void sethId(Long hId) {
-        this.hId = hId;
+    public void setHotId(Long hotId) {
+        this.hotId = hotId;
     }
 
     @Override
@@ -148,8 +150,8 @@ public class Booking implements Serializable {
         if (getCustomer() != null ? !getCustomer().equals(booking.getCustomer()) : booking.getCustomer() != null)
             return false;
         if (getHotel() != null ? !getHotel().equals(booking.getHotel()) : booking.getHotel() != null) return false;
-        if (getcId() != null ? !getcId().equals(booking.getcId()) : booking.getcId() != null) return false;
-        return gethId() != null ? gethId().equals(booking.gethId()) : booking.gethId() == null;
+        if (getCusId() != null ? !getCusId().equals(booking.getCusId()) : booking.getCusId() != null) return false;
+        return getHotId() != null ? getHotId().equals(booking.getHotId()) : booking.getHotId() == null;
     }
 
     @Override
@@ -160,8 +162,8 @@ public class Booking implements Serializable {
         result = 31 * result + (getTolPrice() != null ? getTolPrice().hashCode() : 0);
         result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
         result = 31 * result + (getHotel() != null ? getHotel().hashCode() : 0);
-        result = 31 * result + (getcId() != null ? getcId().hashCode() : 0);
-        result = 31 * result + (gethId() != null ? gethId().hashCode() : 0);
+        result = 31 * result + (getCusId() != null ? getCusId().hashCode() : 0);
+        result = 31 * result + (getHotId() != null ? getHotId().hashCode() : 0);
         return result;
     }
 
@@ -174,8 +176,8 @@ public class Booking implements Serializable {
                 ", tolPrice=" + tolPrice +
                 ", customer=" + customer +
                 ", hotel=" + hotel +
-                ", cId=" + cId +
-                ", hId=" + hId +
+                ", cusId=" + cusId +
+                ", hotId=" + hotId +
                 '}';
     }
 }

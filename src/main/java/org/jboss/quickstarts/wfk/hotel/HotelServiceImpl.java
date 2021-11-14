@@ -72,7 +72,7 @@ public class HotelServiceImpl implements HotelService{
      */
     @Override
     public Hotel create(Hotel hotel) throws Exception {
-        log.info("HotelService.create() - Creating " + hotel.gethName());
+        log.info("HotelService.create() - Creating " + hotel.getName());
 
         // Check to make sure the data fits with the parameters in the Contact model and passes validation.
         validator.validateContact(hotel);
@@ -107,7 +107,7 @@ public class HotelServiceImpl implements HotelService{
      */
     @Override
     public Hotel update(Hotel hotel) throws Exception {
-        log.info("HotelService.update() - Updating " + hotel.gethName());
+        log.info("HotelService.update() - Updating " + hotel.getName());
 
         // Check to make sure the data fits with the parameters in the Contact model and passes validation.
         validator.validateContact(hotel);
@@ -145,7 +145,7 @@ public class HotelServiceImpl implements HotelService{
 
         Hotel deletedHotel = null;
 
-        if (hotel.gethId() != null) {
+        if (hotel.getId() != null) {
             deletedHotel = crud.delete(hotel);
         } else {
             log.info("delete() - No ID was found so can't Delete.");

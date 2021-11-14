@@ -37,7 +37,7 @@ public class HotelRepository {
      * @return List of Hotel objects
      */
     List<Hotel> findAllOrderedByName(String hName) {
-        TypedQuery<Hotel> query = em.createNamedQuery(Hotel.FIND_BY_HNAME, Hotel.class).setParameter("hName", hName);
+        TypedQuery<Hotel> query = em.createNamedQuery(Hotel.FIND_ALL, Hotel.class);
         return query.getResultList();
     }
 
@@ -72,7 +72,7 @@ public class HotelRepository {
      * @return The first Hotel with the specified name
      */
     Hotel findByName(String name) {
-        TypedQuery<Hotel> query = em.createNamedQuery(Hotel.FIND_BY_HNAME, Hotel.class).setParameter("Name", name);
+        TypedQuery<Hotel> query = em.createNamedQuery(Hotel.FIND_BY_NAME, Hotel.class).setParameter("name", name);
         return query.getSingleResult();
     }
 
@@ -90,7 +90,7 @@ public class HotelRepository {
      * @throws ConstraintViolationException, ValidationException, Exception
      */
     Hotel create(Hotel hotel) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("HotelRepository.create() - Creating " + hotel.gethName());
+        log.info("HotelRepository.create() - Creating " + hotel.getName());
 
         // Write the hotel to the database.
         em.persist(hotel);
@@ -112,7 +112,7 @@ public class HotelRepository {
      * @throws ConstraintViolationException, ValidationException, Exception
      */
     Hotel update(Hotel hotel) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("HotelRepository.update() - Updating " + hotel.gethName());
+        log.info("HotelRepository.update() - Updating " + hotel.getName());
 
         // Either update the hotel or add it if it can't be found.
         em.merge(hotel);
@@ -128,9 +128,9 @@ public class HotelRepository {
      * @throws Exception
      */
     Hotel delete(Hotel hotel) throws Exception {
-        log.info("HotelRepository.delete() - Deleting " + hotel.gethName());
+        log.info("HotelRepository.delete() - Deleting " + hotel.getName());
 
-        if (hotel.gethId() != null) {
+        if (hotel.getId() != null) {
             /*
              * The Hibernate session (aka EntityManager's persistent context) is closed and invalidated after the commit(),
              * because it is bound to a transaction. The object goes into a detached status. If you open a new persistent

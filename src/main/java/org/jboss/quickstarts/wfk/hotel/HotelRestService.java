@@ -96,7 +96,7 @@ public class HotelRestService {
             @ApiResponse(code = 404, message = "Hotel with id not found")
     })
     public Response retrieveHotelById(
-            @ApiParam(value = "Id of Customer to be fetched", allowableValues = "range[0, infinity]", required = true)
+            @ApiParam(value = "Id of Hotel to be fetched", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
                     long id){
 
@@ -200,11 +200,11 @@ public class HotelRestService {
             @ApiParam(value = "JSON representation of Customer object to be updated in the database", required = true)
                     Hotel hotel) {
 
-        if (hotel == null || hotel.gethId() == null) {
+        if (hotel == null || hotel.getId() == null) {
             throw new RestServiceException("Invalid hotel supplied in request body", Response.Status.BAD_REQUEST);
         }
 
-        if (hotel.gethId() != null && hotel.gethId() != id) {
+        if (hotel.getId() != null && hotel.getId() != id) {
             // The client attempted to update the read-only Id. This is not permitted.
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("id", "The Customer ID in the request body must match that of the Customer being updated");
@@ -212,7 +212,7 @@ public class HotelRestService {
                     responseObj, Response.Status.CONFLICT);
         }
 
-        if (service.findById(hotel.gethId()) == null) {
+        if (service.findById(hotel.getId()) == null) {
             // Verify that the customer exists. Return 404, if not present.
             throw new RestServiceException("No customer with the id " + id + " was found!", Response.Status.NOT_FOUND);
         }

@@ -75,7 +75,7 @@ public class Customer implements Serializable {
     private String state;
 
     @JsonIgnore
-    @OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="customer")
+    @OneToMany(cascade=CascadeType.REMOVE,mappedBy="customer",orphanRemoval = true)
     private Set<Booking> bookings;
 
     public Long getId() {
@@ -132,6 +132,15 @@ public class Customer implements Serializable {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+
+    public Set<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
     }
 
     @Override

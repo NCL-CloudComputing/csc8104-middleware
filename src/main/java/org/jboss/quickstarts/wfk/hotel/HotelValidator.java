@@ -45,7 +45,7 @@ public class HotelValidator {
         }
 
         // Check the uniqueness of the email address
-        if (emailAlreadyExists(hotel.getEmail(), hotel.gethId())) {
+        if (emailAlreadyExists(hotel.getEmail(), hotel.getId())) {
             throw new UniqueEmailException("Unique Email Violation");
         }
     }

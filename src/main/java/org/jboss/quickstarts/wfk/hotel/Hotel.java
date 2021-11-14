@@ -19,8 +19,8 @@ import java.util.Set;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Hotel.FIND_ALL, query = "SELECT h FROM Hotel h ORDER BY h.hName ASC"),
-        @NamedQuery(name = Hotel.FIND_BY_HNAME, query = "SELECT h FROM Hotel h WHERE h.hName = :hName"),
+        @NamedQuery(name = Hotel.FIND_ALL, query = "SELECT h FROM Hotel h ORDER BY h.name ASC"),
+        @NamedQuery(name = Hotel.FIND_BY_NAME, query = "SELECT h FROM Hotel h WHERE h.name = :name"),
         @NamedQuery(name = Hotel.FIND_BY_EMAIL, query = "SELECT h FROM Hotel h WHERE h.email = :email")
 })
 @XmlRootElement
@@ -29,21 +29,15 @@ import java.util.Set;
 public class Hotel implements Serializable {
 
     public static final String FIND_ALL = "Hotel.findAll";
-    public static final String FIND_BY_HNAME = "Hotel.findByHname";
+    public static final String FIND_BY_NAME = "Hotel.findByName";
     public static final String FIND_BY_EMAIL = "Hotel.findByEmail";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long hId;
+    private Long id;
 
-
-    @Column(name = "remaining_number")
-    private Integer hRemainingNum;
-
-    @NotNull
-    @NotEmpty
-    @Column(name = "hName")
-    private String hName;
+    @Column(name = "name")
+    private String name;
 
     @NotNull
     @Pattern(regexp = "^\\([2-9][0-8][0-9]\\)\\s?[0-9]{3}\\-[0-9]{4}$")
@@ -69,7 +63,7 @@ public class Hotel implements Serializable {
     private String state;
 
     @JsonIgnore
-    @OneToMany(cascade=CascadeType.PERSIST,fetch=FetchType.LAZY,mappedBy="hotel")
+    @OneToMany(cascade=CascadeType.REMOVE,mappedBy="hotel",orphanRemoval = true)
     private Set<Booking> bookings;
 
 
@@ -80,28 +74,30 @@ public class Hotel implements Serializable {
     public void setState(String state) {
         this.state = state;
     }
-    public Long gethId() {
-        return hId;
+
+
+    public Long getId() {
+        return id;
     }
 
-    public void sethId(Long hId) {
-        this.hId = hId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Integer gethRemainingNum() {
-        return hRemainingNum;
+    public String getName() {
+        return name;
     }
 
-    public void sethRemainingNum(Integer hRemainingNum) {
-        this.hRemainingNum = hRemainingNum;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String gethName() {
-        return hName;
+    public Set<Booking> getBookings() {
+        return bookings;
     }
 
-    public void sethName(String hName) {
-        this.hName = hName;
+    public void setBookings(Set<Booking> bookings) {
+        this.bookings = bookings;
     }
 
     public String getPhoneNumber() {
@@ -143,10 +139,8 @@ public class Hotel implements Serializable {
 
         Hotel hotel = (Hotel) o;
 
-        if (gethId() != null ? !gethId().equals(hotel.gethId()) : hotel.gethId() != null) return false;
-        if (gethRemainingNum() != null ? !gethRemainingNum().equals(hotel.gethRemainingNum()) : hotel.gethRemainingNum() != null)
-            return false;
-        if (gethName() != null ? !gethName().equals(hotel.gethName()) : hotel.gethName() != null) return false;
+        if (getId() != null ? !getId().equals(hotel.getId()) : hotel.getId() != null) return false;
+        if (getName() != null ? !getName().equals(hotel.getName()) : hotel.getName() != null) return false;
         if (getPhoneNumber() != null ? !getPhoneNumber().equals(hotel.getPhoneNumber()) : hotel.getPhoneNumber() != null)
             return false;
         if (getEmail() != null ? !getEmail().equals(hotel.getEmail()) : hotel.getEmail() != null) return false;
@@ -157,9 +151,8 @@ public class Hotel implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = gethId() != null ? gethId().hashCode() : 0;
-        result = 31 * result + (gethRemainingNum() != null ? gethRemainingNum().hashCode() : 0);
-        result = 31 * result + (gethName() != null ? gethName().hashCode() : 0);
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getPhoneNumber() != null ? getPhoneNumber().hashCode() : 0);
         result = 31 * result + (getEmail() != null ? getEmail().hashCode() : 0);
         result = 31 * result + (getPrice() != null ? getPrice().hashCode() : 0);
@@ -171,9 +164,8 @@ public class Hotel implements Serializable {
     @Override
     public String toString() {
         return "Hotel{" +
-                "hId=" + hId +
-                ", hRemainingNum=" + hRemainingNum +
-                ", hName='" + hName + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", email='" + email + '\'' +
                 ", price=" + price +

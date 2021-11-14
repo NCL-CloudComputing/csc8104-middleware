@@ -67,11 +67,6 @@ public class BookingRestService {
     @Inject
     private BookingService service;
 
-    @Column(name = "cId")
-    private Long cId;
-
-    @Resource
-    UserTransaction transaction;
 
     /**
      * <p>Return all the Bookings.  They are sorted alphabetically by name.</p>
@@ -86,7 +81,7 @@ public class BookingRestService {
     @ApiOperation(value = "Fetch all Bookings", notes = "Returns a JSON array of all stored Booking objects.")
     public Response retrieveAllBookings() {
         //Create an empty collection to contain the intersection of Bookings to be returned
-        List<org.jboss.quickstarts.wfk.booking.Booking> bookings;
+        List<Booking> bookings;
 
 
         bookings = service.findAllOrderedByOrderDate();
@@ -117,14 +112,14 @@ public class BookingRestService {
             @PathParam("customerId")
             Long customerId) {
 
-        Booking booking;
+        List<Booking> bookings;
         try {
-            booking = service.findByUserId(customerId);
+             bookings = service.findByUserId(customerId);
         } catch (NoResultException e) {
             // Verify that the booking exists. Return 404, if not present.
             throw new RestServiceException("No Booking with the customerId " + customerId + " was found!", Response.Status.NOT_FOUND);
         }
-        return Response.ok(booking).build();
+        return Response.ok(bookings).build();
     }
 
     /**
@@ -182,14 +177,14 @@ public class BookingRestService {
             @PathParam("hotelId")
                     long hotelId) {
 
-        Booking booking = service.findById(hotelId);
-        if (booking == null) {
+        List<Booking> bookings = service.findByHotelId(hotelId);
+        if (bookings == null) {
             // Verify that the booking exists. Return 404, if not present.
             throw new RestServiceException("No Booking with the id " + hotelId + " was found!", Response.Status.NOT_FOUND);
         }
-        log.info("findByHotelId " + hotelId + ": found Booking = " + booking.toString());
+        log.info("findByHotelId " + hotelId + ": found Booking = " + bookings.toString());
 
-        return Response.ok(booking).build();
+        return Response.ok(bookings).build();
     }
     /**
      * <p>Creates a new booking from the values provided. Performs validation and will return a JAX-RS response with
@@ -210,7 +205,7 @@ public class BookingRestService {
     })
     public Response createBooking(
             @ApiParam(value = "JSON representation of Booking object to be added to the database", required = true)
-                    org.jboss.quickstarts.wfk.booking.Booking booking) {
+                    Booking booking) {
 
 
         if (booking == null) {
@@ -220,6 +215,8 @@ public class BookingRestService {
         Response.ResponseBuilder builder;
 
         try {
+
+            log.info(booking.toString());
             // Go add the new Booking.
             service.create(booking);
 
@@ -269,7 +266,7 @@ public class BookingRestService {
             @PathParam("id")
             long id,
             @ApiParam(value = "JSON representation of Booking object to be updated in the database", required = true)
-                    org.jboss.quickstarts.wfk.booking.Booking booking) {
+                    Booking booking) {
 
         if (booking == null || booking.getId() == null) {
             throw new RestServiceException("Invalid Booking supplied in request body", Response.Status.BAD_REQUEST);
@@ -332,7 +329,7 @@ public class BookingRestService {
             @ApiResponse(code = 404, message = "Booking with id not found"),
             @ApiResponse(code = 500, message = "An unexpected error occurred whilst processing the request")
     })
-    public Response deleteBooking(
+    public Response cancelBooking(
             @ApiParam(value = "Id of Booking to be deleted", allowableValues = "range[0, infinity]", required = true)
             @PathParam("id")
             long id) {
@@ -354,7 +351,7 @@ public class BookingRestService {
             // Handle generic exceptions
             throw new RestServiceException(e);
         }
-        log.info("deleteBooking completed. Booking = " + booking.toString());
+        log.info("cancelBooking completed. Booking = " + booking.toString());
         return builder.build();
     }
 }

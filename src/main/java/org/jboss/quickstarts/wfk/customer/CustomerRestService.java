@@ -61,9 +61,6 @@ public class CustomerRestService {
     @Inject
     private BookingService bookingService;
 
-    @Resource
-    UserTransaction transaction;
-
     /**
      * <p>Return all the Customers.  They are sorted alphabetically by name.</p>
      *
@@ -269,8 +266,6 @@ public class CustomerRestService {
 
         try {
 
-            //start a transaction
-            transaction.begin();
             // Apply the changes the Customer.
             service.update(customer);
 
@@ -282,7 +277,6 @@ public class CustomerRestService {
                 }
             }
 
-            transaction.commit();
 
             // Create an OK Response and pass the customer back in case it is needed.
             builder = Response.ok(customer);
@@ -307,11 +301,7 @@ public class CustomerRestService {
             responseObj.put("area_code", "The telephone area code provided is not recognised, please provide another");
             throw new RestServiceException("Bad Request", responseObj, Response.Status.BAD_REQUEST, e);
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (SystemException systemException) {
-                systemException.printStackTrace();
-            }
+
             // Handle generic exceptions
             throw new RestServiceException(e);
 

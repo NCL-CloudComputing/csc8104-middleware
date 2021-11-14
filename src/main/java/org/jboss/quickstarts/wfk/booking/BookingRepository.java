@@ -74,7 +74,7 @@ public class BookingRepository {
      * @return The Booking with the specified customerId
      */
     List<Booking> findByHotelId(Long hId) {
-        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_USERID, Booking.class).setParameter("hId",hId);
+        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_HOTELID, Booking.class).setParameter("hId",hId);
         return query.getResultList();
     }
 
@@ -93,8 +93,9 @@ public class BookingRepository {
         Booking create(Booking booking) throws ConstraintViolationException, ValidationException, Exception {
         log.info("BookingRepository.create() - Creating Booking, Booking Id:" + booking.getId());
 
+
+            em.persist(booking);
         // Write the booking to the database.
-        em.persist(booking);
 
         return booking;
     }
