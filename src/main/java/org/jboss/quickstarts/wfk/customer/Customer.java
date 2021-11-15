@@ -75,7 +75,7 @@ public class Customer implements Serializable {
     private String state;
 
     @JsonIgnore
-    @OneToMany(cascade=CascadeType.REMOVE,mappedBy="customer",orphanRemoval = true)
+    @OneToMany(cascade=CascadeType.ALL,mappedBy="customer",orphanRemoval = true)
     private Set<Booking> bookings;
 
     public Long getId() {

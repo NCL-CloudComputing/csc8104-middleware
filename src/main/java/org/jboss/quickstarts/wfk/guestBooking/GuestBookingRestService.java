@@ -11,7 +11,6 @@ import org.jboss.quickstarts.wfk.util.RestServiceException;
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.SystemException;
@@ -51,7 +50,7 @@ import java.util.logging.Logger;
 @Produces(MediaType.APPLICATION_JSON)
 @Api(value = "/guestBookings", description = "Operations about guestBookings")
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
+@TransactionManagement(javax.ejb.TransactionManagementType.BEAN)
 public class GuestBookingRestService {
 
     @Inject
@@ -105,14 +104,16 @@ public class GuestBookingRestService {
             Customer existedCustomer = customerService.create(customer);
 
             booking.setCustomer(existedCustomer);
+            booking.setCusId(existedCustomer.getId());
             // Go add the new Booking.
-            bookingService.create(booking);
+            Booking booking1 = bookingService.create(booking);
+
+            transaction.commit();
 
 
             // Create a "Resource Created" 201 Response and pass the booking back in case it is needed.
             builder = Response.status(Response.Status.CREATED).entity(guestBooking.getBooking());
 
-            transaction.commit();
         } catch (ConstraintViolationException ce) {
             //Handle bean validation issues
             Map<String, String> responseObj = new HashMap<>();
@@ -123,9 +124,10 @@ public class GuestBookingRestService {
             throw new RestServiceException("Bad Request", responseObj, Response.Status.BAD_REQUEST, ce);
 
         }   catch (Exception e) {
+
             try {
                 transaction.rollback();
-                throw new RestServiceException("the transaction failed ");
+                log.info("the transaction failed");
             } catch (SystemException systemException) {
                 systemException.printStackTrace();
             }

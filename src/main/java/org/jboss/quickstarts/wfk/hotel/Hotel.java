@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -63,7 +62,7 @@ public class Hotel implements Serializable {
     private String state;
 
     @JsonIgnore
-    @OneToMany(cascade=CascadeType.REMOVE,mappedBy="hotel",orphanRemoval = true)
+    @OneToMany(cascade=CascadeType.ALL,mappedBy="hotel",orphanRemoval = true)
     private Set<Booking> bookings;
 
 
