@@ -111,7 +111,7 @@ public class CustomerRepository {
      * @throws ConstraintViolationException, ValidationException, Exception
      */
     Customer create(Customer customer) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("CustomerRepository.create() - Creating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerRepository.create() - Creating " + customer.getName());
 
         // Write the customer to the database.
         em.persist(customer);
@@ -133,7 +133,7 @@ public class CustomerRepository {
      * @throws ConstraintViolationException, ValidationException, Exception
      */
     Customer update(Customer customer) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("CustomerRepository.update() - Updating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerRepository.update() - Updating " + customer.getName());
 
         // Either update the customer or add it if it can't be found.
         em.merge(customer);
@@ -149,7 +149,7 @@ public class CustomerRepository {
      * @throws Exception
      */
     Customer delete(Customer customer) throws Exception {
-        log.info("CustomerRepository.delete() - Deleting " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerRepository.delete() - Deleting " + customer.getName());
 
         if (customer.getId() != null) {
             /*

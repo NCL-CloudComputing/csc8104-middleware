@@ -22,36 +22,26 @@ import java.util.Date;
 
 @Entity
 @NamedQueries({
-        @NamedQuery(name = Booking.FIND_ALL, query = "SELECT a FROM Booking a ORDER BY a.orderDate DESC"),
-        @NamedQuery(name = Booking.FIND_BY_USERID, query = "SELECT a FROM Booking a WHERE a.cusId = :cusId"),
-        @NamedQuery(name = Booking.FIND_BY_HOTELID, query = "SELECT a FROM Booking a WHERE a.hotId = :hotId"),
-        @NamedQuery(name = Booking.FIND_BY_ID, query = "SELECT a FROM Booking a WHERE a.id = :id")
+        @NamedQuery(name = Booking.FIND_ALL, query = "SELECT c FROM Booking c ORDER BY c.futureDate DESC"),
+        @NamedQuery(name = Booking.FIND_BY_CUSTOMER_ID, query = "SELECT c FROM Booking c WHERE c.customer.id = :customerId ORDER BY c.futureDate DESC"),
+        @NamedQuery(name = Booking.FIND_BY_HOTEL_ID, query = "SELECT c FROM Booking c WHERE c.hotel.id = :hotelId ORDER BY c.futureDate DESC")
 })
 @XmlRootElement
 @Table(name = "booking", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
 public class Booking implements Serializable {
 
     public static final String FIND_ALL = "Booking.findAll";
-    public static final String FIND_BY_USERID = "Booking.findByUserId";
-    public static final String FIND_BY_HOTELID = "Booking.findByHotelId";
-    public static final String FIND_BY_ID = "Booking.findById";
+    public static final String FIND_BY_CUSTOMER_ID = "Booking.findByCustomerId";
+    public static final String FIND_BY_HOTEL_ID = "Booking.findByHotelId";
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @NotNull
-    @Column(name = "order_date")
+    @Column(name = "future_date")
     @Temporal(javax.persistence.TemporalType.DATE)
-    private Date orderDate;
-
-
-    @NotNull
-    @Column(name = "qty_item")
-    private Integer qtyItem;
-
-    @Column(name = "tol_price")
-    private Double tolPrice;
+    private Date futureDate;
 
     @ManyToOne()
     @JoinColumn(name="customer_id")
@@ -61,11 +51,6 @@ public class Booking implements Serializable {
     @JoinColumn(name="hotel_id")
     private Hotel hotel;
 
-    @Column(name = "cusId")
-    private Long cusId;
-
-    @Column(name = "hotId")
-    private Long hotId;
 
     public Long getId() {
         return id;
@@ -75,29 +60,7 @@ public class Booking implements Serializable {
         this.id = id;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
-    }
 
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public Integer getQtyItem() {
-        return qtyItem;
-    }
-
-    public void setQtyItem(Integer qtyItem) {
-        this.qtyItem = qtyItem;
-    }
-
-    public Double getTolPrice() {
-        return tolPrice;
-    }
-
-    public void setTolPrice(Double tolPrice) {
-        this.tolPrice = tolPrice;
-    }
 
     public Customer getCustomer() {
         return customer;
@@ -116,20 +79,12 @@ public class Booking implements Serializable {
     }
 
 
-    public Long getCusId() {
-        return cusId;
+    public Date getFutureDate() {
+        return futureDate;
     }
 
-    public void setCusId(Long cusId) {
-        this.cusId = cusId;
-    }
-
-    public Long getHotId() {
-        return hotId;
-    }
-
-    public void setHotId(Long hotId) {
-        this.hotId = hotId;
+    public void setFutureDate(Date futureDate) {
+        this.futureDate = futureDate;
     }
 
     @Override
@@ -140,29 +95,19 @@ public class Booking implements Serializable {
         Booking booking = (Booking) o;
 
         if (getId() != null ? !getId().equals(booking.getId()) : booking.getId() != null) return false;
-        if (getOrderDate() != null ? !getOrderDate().equals(booking.getOrderDate()) : booking.getOrderDate() != null)
-            return false;
-        if (getQtyItem() != null ? !getQtyItem().equals(booking.getQtyItem()) : booking.getQtyItem() != null)
-            return false;
-        if (getTolPrice() != null ? !getTolPrice().equals(booking.getTolPrice()) : booking.getTolPrice() != null)
+        if (getFutureDate() != null ? !getFutureDate().equals(booking.getFutureDate()) : booking.getFutureDate() != null)
             return false;
         if (getCustomer() != null ? !getCustomer().equals(booking.getCustomer()) : booking.getCustomer() != null)
             return false;
-        if (getHotel() != null ? !getHotel().equals(booking.getHotel()) : booking.getHotel() != null) return false;
-        if (getCusId() != null ? !getCusId().equals(booking.getCusId()) : booking.getCusId() != null) return false;
-        return getHotId() != null ? getHotId().equals(booking.getHotId()) : booking.getHotId() == null;
+        return getHotel() != null ? getHotel().equals(booking.getHotel()) : booking.getHotel() == null;
     }
 
     @Override
     public int hashCode() {
         int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getOrderDate() != null ? getOrderDate().hashCode() : 0);
-        result = 31 * result + (getQtyItem() != null ? getQtyItem().hashCode() : 0);
-        result = 31 * result + (getTolPrice() != null ? getTolPrice().hashCode() : 0);
+        result = 31 * result + (getFutureDate() != null ? getFutureDate().hashCode() : 0);
         result = 31 * result + (getCustomer() != null ? getCustomer().hashCode() : 0);
         result = 31 * result + (getHotel() != null ? getHotel().hashCode() : 0);
-        result = 31 * result + (getCusId() != null ? getCusId().hashCode() : 0);
-        result = 31 * result + (getHotId() != null ? getHotId().hashCode() : 0);
         return result;
     }
 
@@ -170,13 +115,9 @@ public class Booking implements Serializable {
     public String toString() {
         return "Booking{" +
                 "id=" + id +
-                ", orderDate=" + orderDate +
-                ", qtyItem=" + qtyItem +
-                ", tolPrice=" + tolPrice +
+                ", futureDate=" + futureDate +
                 ", customer=" + customer +
                 ", hotel=" + hotel +
-                ", cusId=" + cusId +
-                ", hotId=" + hotId +
                 '}';
     }
 }

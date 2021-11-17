@@ -35,21 +35,8 @@ public interface CustomerService {
      */
     Customer findByEmail(String email);
 
-    /**
-     * <p>Returns a single Contact object, specified by a String firstName.<p/>
-     *
-     * @param firstName The firstName field of the Customer to be returned
-     * @return The first Customer with the specified firstName
-     */
-    List<Customer> findAllByFirstName(String firstName);
 
-    /**
-     * <p>Returns a single Customer object, specified by a String lastName.<p/>
-     *
-     * @param lastName The lastName field of the Customers to be returned
-     * @return The Customers with the specified lastName
-     */
-    List<Customer> findAllByLastName(String lastName);
+
 
     /**
      * <p>Writes the provided Contact object to the application database.<p/>

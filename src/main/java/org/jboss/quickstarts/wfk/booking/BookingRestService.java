@@ -17,11 +17,11 @@
 package org.jboss.quickstarts.wfk.booking;
 
 import io.swagger.annotations.*;
-import org.jboss.quickstarts.wfk.area.InvalidAreaCodeException;
+
 import org.jboss.quickstarts.wfk.util.RestServiceException;
 import org.jboss.resteasy.annotations.cache.Cache;
 
-import javax.annotation.Resource;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -98,7 +98,7 @@ public class BookingRestService {
      */
     @GET
     @Cache
-    @Path("/{customerId:[0-9]+}")
+    @Path("/getByCustomerId/{customerId:[0-9]+}")
     @ApiOperation(
             value = "Fetch a Booking by customerId",
             notes = "Returns a JSON representation of the Booking object with the provided customerId."
@@ -163,7 +163,7 @@ public class BookingRestService {
      */
     @GET
     @Cache
-    @Path("/{hotelId:[0-9]+}")
+    @Path("/getByHotelId/{hotelId:[0-9]+}")
     @ApiOperation(
             value = "Fetch a Booking by hotelId",
             notes = "Returns a JSON representation of the Booking object with the provided hotelId."

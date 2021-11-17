@@ -104,7 +104,6 @@ public class GuestBookingRestService {
             Customer existedCustomer = customerService.create(customer);
 
             booking.setCustomer(existedCustomer);
-            booking.setCusId(existedCustomer.getId());
             // Go add the new Booking.
             Booking booking1 = bookingService.create(booking);
 

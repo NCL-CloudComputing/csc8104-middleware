@@ -76,27 +76,8 @@ public class CustomerServiceImpl implements CustomerService{
         return crud.findByEmail(email);
     }
 
-    /**
-     * <p>Returns a single Customer object, specified by a String firstName.<p/>
-     *
-     * @param firstName The firstName field of the Customer to be returned
-     * @return The first Customer with the specified firstName
-     */
-    @Override
-    public List<Customer> findAllByFirstName(String firstName) {
-        return crud.findAllByFirstName(firstName);
-    }
 
-    /**
-     * <p>Returns a single Customer object, specified by a String lastName.<p/>
-     *
-     * @param lastName The lastName field of the Customers to be returned
-     * @return The Customers with the specified lastName
-     */
-    @Override
-    public List<Customer> findAllByLastName(String lastName) {
-        return crud.findAllByLastName(lastName);
-    }
+
 
     /**
      * <p>Writes the provided Customer object to the application database.<p/>
@@ -109,25 +90,12 @@ public class CustomerServiceImpl implements CustomerService{
      */
     @Override
     public Customer create(Customer customer) throws ConstraintViolationException, ValidationException, Exception {
-        log.info("CustomerService.create() - Creating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerService.create() - Creating " + customer.getName());
 
         // Check to make sure the data fits with the parameters in the Customer model and passes validation.
         validator.validateCustomer(customer);
 
-        //Create client service instance to make REST requests to upstream service
-        ResteasyWebTarget target = client.target("http://ec2-18-119-125-232.us-east-2.compute.amazonaws.com/");
-        AreaService service = target.proxy(AreaService.class);
 
-        try {
-            Area area = service.getAreaById(Integer.parseInt(customer.getPhoneNumber().substring(1, 4)));
-            customer.setState(area.getState());
-        } catch (ClientErrorException e) {
-            if (e.getResponse().getStatusInfo() == Response.Status.NOT_FOUND) {
-                throw new InvalidAreaCodeException("The area code provided does not exist", e);
-            } else {
-                throw e;
-            }
-        }
 
         // Write the customer to the database.
         return crud.create(customer);
@@ -144,7 +112,7 @@ public class CustomerServiceImpl implements CustomerService{
      */
     @Override
     public Customer update(Customer customer) throws ConstraintViolationException, ValidationException, Exception{
-        log.info("CustomerService.update() - Updating " + customer.getFirstName() + " " + customer.getLastName());
+        log.info("CustomerService.update() - Updating " + customer.getName());
 
         // Check to make sure the data fits with the parameters in the Customer model and passes validation.
         validator.validateCustomer(customer);
@@ -155,7 +123,6 @@ public class CustomerServiceImpl implements CustomerService{
 
         try {
             Area area = service.getAreaById(Integer.parseInt(customer.getPhoneNumber().substring(1, 4)));
-            customer.setState(area.getState());
         } catch (ClientErrorException e) {
             if (e.getResponse().getStatusInfo() == Response.Status.NOT_FOUND) {
                 throw new InvalidAreaCodeException("The area code provided does not exist", e);

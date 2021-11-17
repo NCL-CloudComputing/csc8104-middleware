@@ -63,7 +63,7 @@ public class BookingRepository {
      * @return The Booking with the specified customerId
      */
     List<Booking> findByUserId(Long cId) {
-        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_USERID, Booking.class).setParameter("cId",cId);
+        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_CUSTOMER_ID, Booking.class).setParameter("customerId",cId);
         return query.getResultList();
     }
 
@@ -74,7 +74,7 @@ public class BookingRepository {
      * @return The Booking with the specified customerId
      */
     List<Booking> findByHotelId(Long hId) {
-        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_HOTELID, Booking.class).setParameter("hId",hId);
+        TypedQuery<Booking> query = em.createNamedQuery(Booking.FIND_BY_HOTEL_ID, Booking.class).setParameter("hotelId",hId);
         return query.getResultList();
     }
 

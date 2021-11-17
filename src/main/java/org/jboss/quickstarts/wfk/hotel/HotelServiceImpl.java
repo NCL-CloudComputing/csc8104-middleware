@@ -77,20 +77,6 @@ public class HotelServiceImpl implements HotelService{
         // Check to make sure the data fits with the parameters in the Contact model and passes validation.
         validator.validateContact(hotel);
 
-        //Create client service instance to make REST requests to upstream service
-        ResteasyWebTarget target = client.target("http://ec2-18-119-125-232.us-east-2.compute.amazonaws.com/");
-        AreaService service = target.proxy(AreaService.class);
-
-        try {
-            Area area = service.getAreaById(Integer.parseInt(hotel.getPhoneNumber().substring(1, 4)));
-            hotel.setState(area.getState());
-        } catch (ClientErrorException e) {
-            if (e.getResponse().getStatusInfo() == Response.Status.NOT_FOUND) {
-                throw new InvalidAreaCodeException("The area code provided does not exist", e);
-            } else {
-                throw e;
-            }
-        }
 
         // Write the contact to the database.
         return crud.create(hotel);
@@ -111,21 +97,6 @@ public class HotelServiceImpl implements HotelService{
 
         // Check to make sure the data fits with the parameters in the Contact model and passes validation.
         validator.validateContact(hotel);
-
-        // Set client target location and define the proxy API class
-        ResteasyWebTarget target = client.target("http://ec2-18-119-125-232.us-east-2.compute.amazonaws.com/");
-        AreaService service = target.proxy(AreaService.class);
-
-        try {
-            Area area = service.getAreaById(Integer.parseInt(hotel.getPhoneNumber().substring(1, 4)));
-            hotel.setState(area.getState());
-        } catch (ClientErrorException e) {
-            if (e.getResponse().getStatusInfo() == Response.Status.NOT_FOUND) {
-                throw new InvalidAreaCodeException("The area code provided does not exist", e);
-            } else {
-                throw e;
-            }
-        }
 
         // Either update the contact or add it if it can't be found.
         return crud.update(hotel);

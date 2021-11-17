@@ -69,20 +69,12 @@ public class CustomerRestService {
      */
     @GET
     @ApiOperation(value = "Fetch all Customer", notes = "Returns a JSON array of all stored Customer objects.")
-    public Response retrieveAllCustomers(@QueryParam("firstname") String firstname, @QueryParam("lastname") String lastname) {
+    public Response retrieveAllCustomers(@QueryParam("name") String name) {
         //Create an empty collection to contain the intersection of Consumers to be returned
         List<Customer> customers;
 
-        if(firstname == null && lastname == null) {
             customers = service.findAllOrderedByName();
-        } else if(lastname == null) {
-            customers = service.findAllByFirstName(firstname);
-        } else if(firstname == null) {
-            customers = service.findAllByLastName(lastname);
-        } else {
-            customers = service.findAllByFirstName(firstname);
-            customers.retainAll(service.findAllByLastName(lastname));
-        }
+
 
         return Response.ok(customers).build();
     }

@@ -97,9 +97,6 @@ public class BookingServiceImpl implements BookingService{
         // Check to make sure the data fits with the parameters in the Booking model and passes validation.
         validator.validateBooking(booking);
 
-        //Create client service instance to make REST requests to upstream service
-        ResteasyWebTarget target = client.target("http://ec2-18-119-125-232.us-east-2.compute.amazonaws.com/");
-        AreaService service = target.proxy(AreaService.class);
 
         // Write the booking to the database.
         return crud.create(booking);

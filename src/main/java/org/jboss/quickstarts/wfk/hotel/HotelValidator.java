@@ -44,42 +44,6 @@ public class HotelValidator {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
         }
 
-        // Check the uniqueness of the email address
-        if (emailAlreadyExists(hotel.getEmail(), hotel.getId())) {
-            throw new UniqueEmailException("Unique Email Violation");
-        }
     }
 
-    /**
-     * <p>Checks if a contact with the same email address is already registered. This is the only way to easily capture the
-     * "@UniqueConstraint(columnNames = "email")" constraint from the Contact class.</p>
-     *
-     * <p>Since Update will being using an email that is already in the database we need to make sure that it is the email
-     * from the record being updated.</p>
-     *
-     * @param email The email to check is unique
-     * @param id The user id to check the email against if it was found
-     * @return boolean which represents whether the email was found, and if so if it belongs to the user with id
-     */
-    boolean emailAlreadyExists(String email, Long id) {
-        Hotel hotel = null;
-        Hotel hotelWithID = null;
-        try {
-            hotel = crud.findByEmail(email);
-        } catch (NoResultException e) {
-            // ignore
-        }
-
-        if (hotel != null && id != null) {
-            try {
-                hotelWithID = crud.findById(id);
-                if (hotelWithID != null && hotelWithID.getEmail().equals(email)) {
-                    hotel = null;
-                }
-            } catch (NoResultException e) {
-                // ignore
-            }
-        }
-        return hotel != null;
-    }
 }

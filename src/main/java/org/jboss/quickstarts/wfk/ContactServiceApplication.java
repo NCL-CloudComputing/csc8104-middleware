@@ -23,6 +23,8 @@ import org.jboss.quickstarts.wfk.contact.ContactRestService;
 import org.jboss.quickstarts.wfk.customer.CustomerRestService;
 import org.jboss.quickstarts.wfk.guestBooking.GuestBookingRestService;
 import org.jboss.quickstarts.wfk.hotel.HotelRestService;
+import org.jboss.quickstarts.wfk.travelAgent.TravelAgentBooking;
+import org.jboss.quickstarts.wfk.travelAgent.TravelAgentRestService;
 import org.jboss.quickstarts.wfk.util.JacksonConfig;
 import org.jboss.quickstarts.wfk.util.RestServiceExceptionHandler;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
@@ -57,7 +59,7 @@ public class ContactServiceApplication extends Application {
         //Add additional RESTService containing packages here, separated by commas:
         // "org.jboss.quickstarts.wfk.contact," +
         // "org.jboss.quickstarts.wfk.other"
-        beanConfig.setResourcePackage("org.jboss.quickstarts.wfk.contact,org.jboss.quickstarts.wfk.customer,org.jboss.quickstarts.wfk.hotel,org.jboss.quickstarts.wfk.booking,org.jboss.quickstarts.wfk.guestBooking");
+        beanConfig.setResourcePackage("org.jboss.quickstarts.wfk.contact,org.jboss.quickstarts.wfk.customer,org.jboss.quickstarts.wfk.hotel,org.jboss.quickstarts.wfk.booking,org.jboss.quickstarts.wfk.travelAgent");
         beanConfig.setScan(true);
 
         //Do not edit below
@@ -74,6 +76,7 @@ public class ContactServiceApplication extends Application {
         services.add(HotelRestService.class);
         services.add(BookingRestService.class);
         services.add(GuestBookingRestService.class);
+        services.add(TravelAgentRestService.class);
 
         //Do not edit below
         services.add(RestServiceExceptionHandler.class);

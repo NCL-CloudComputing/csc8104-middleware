@@ -42,18 +42,6 @@ public class HotelRepository {
     }
 
     /**
-     * <p>Returns a single Hotel object, specified by a String email.</p>
-     *
-     * <p>If there is more than one Hotel with the specified email, only the first encountered will be returned.<p/>
-     *
-     * @param email The email field of the Customer to be returned
-     * @return The first Customer with the specified email
-     */
-    Hotel findByEmail(String email) {
-        TypedQuery<Hotel> query = em.createNamedQuery(Hotel.FIND_BY_EMAIL, Hotel.class).setParameter("email", email);
-        return query.getSingleResult();
-    }
-    /**
      * <p>Returns a single Hotel object, specified by a Long id.<p/>
      *
      * @param id The id field of the Hotel to be returned
@@ -61,19 +49,6 @@ public class HotelRepository {
      */
     Hotel findById(Long id) {
         return em.find(Hotel.class, id);
-    }
-
-    /**
-     * <p>Returns a single Hotel object, specified by a Name.</p>
-     *
-     * <p>If there is more than one Hotel with the specified Name, only the first encountered will be returned.<p/>
-     *
-     * @param name The name field of the Hotel to be returned
-     * @return The first Hotel with the specified name
-     */
-    Hotel findByName(String name) {
-        TypedQuery<Hotel> query = em.createNamedQuery(Hotel.FIND_BY_NAME, Hotel.class).setParameter("name", name);
-        return query.getSingleResult();
     }
 
 
