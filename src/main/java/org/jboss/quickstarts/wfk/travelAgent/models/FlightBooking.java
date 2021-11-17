@@ -2,16 +2,20 @@ package org.jboss.quickstarts.wfk.travelAgent.models;
 
 import org.jboss.quickstarts.wfk.customer.Customer;
 
+import java.util.Date;
+
 public class FlightBooking {
 
 
     private Long id;
 
 
-    private FlightCustomer customer;
+    private Long customerId;
 
 
-    private Flight flight;
+    private Long flightId;
+
+    private Date futureDate;
 
     public Long getId() {
         return id;
@@ -21,19 +25,37 @@ public class FlightBooking {
         this.id = id;
     }
 
-    public FlightCustomer getCustomer() {
-        return customer;
+    public Long getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomer(FlightCustomer customer) {
-        this.customer = customer;
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public Long getFlightId() {
+        return flightId;
     }
 
-    public void setFlight(Flight flight) {
-        this.flight = flight;
+    public void setFlightId(Long flightId) {
+        this.flightId = flightId;
+    }
+
+    public Date getFutureDate() {
+        return futureDate;
+    }
+
+    public void setFutureDate(Date futureDate) {
+        this.futureDate = futureDate;
+    }
+
+    @Override
+    public String toString() {
+        return "FlightBooking{" +
+                "id=" + id +
+                ", customerId='" + customerId + '\'' +
+                ", flightId='" + flightId + '\'' +
+                ", futureDate=" + futureDate +
+                '}';
     }
 }

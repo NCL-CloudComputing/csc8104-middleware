@@ -25,23 +25,29 @@ public interface FlightBookingService {
     List<Flight> getAllFlights();
 
     @POST
-    @Path("/booking")
+    @Path("/bookings")
     @Consumes(MediaType.APPLICATION_JSON)
     FlightBooking createFlightBooking(FlightBooking flightBooking);
 
     @DELETE
-    @Path("/booking/{id:[0-9]+}")
+    @Path("/bookings/{id:[0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     void deleteFlightBooking(@PathParam("id") Long id);
 
     @POST
     @Path("/customers")
     @Consumes(MediaType.APPLICATION_JSON)
-    TaxiCustomer createCustomer(TaxiCustomer taxiCustomer);
+    FlightCustomer createCustomer(FlightCustomer flightCustomer);
 
     @GET
     @Path("/customers/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    TaxiCustomer getConsumerById(@PathParam("id") Long id);
+    FlightCustomer getConsumerById(@PathParam("id") Long id);
+
+    @GET
+    @Path("/customers/email/{email}")
+    @Produces(MediaType.APPLICATION_JSON)
+    FlightCustomer getConsumerByEmail(@PathParam("email") String email);
+
 
 }

@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 @Dependent
 public class TravelAgentService {
 
-    final static String FLIGHT_BOOKING = "http://csc8104-build-stream-haoduan-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com";
-    final static String TAXI_BOOKING = "http://csc8104-build-stream-chenbryan0707-dev.apps.sandbox.x8i5.p1.openshiftapps.com";
+    final static String FLIGHT_BOOKING = "http://csc8104-build-stream-minghaotian-dev.apps.sandbox.x8i5.p1.openshiftapps.com/";
+    final static String TAXI_BOOKING = "http://csc8104-build-stream-chenbryan0707-dev.apps.sandbox.x8i5.p1.openshiftapps.com/";
 
     @Inject
     private @Named("logger")
@@ -121,37 +121,53 @@ public class TravelAgentService {
         }
 
         travelAgentBooking.setHotelId(booking1.getId());
-//        //get flightBookingId
-//        Long flightId = travelAgent.getFlightId();
-//
-//        //find ALREADY exists flight
-//        Flight flightById = flightBookingService.getFlightById(flightId);
-//        flightCustomer.setFirstName(hotelCustomer.getName());
-//        flightCustomer.setEmail(hotelCustomer.getEmail());
-//        flightCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
+        //get flightBookingId
+        Long flightId = travelAgent.getFlightId();
 
-  //      FlightCustomer flightCustomer1 = FlightBookingService.createCustomer(flightCustomer);
-        //        flightBooking.setCustomer(flightCustomer1);;
-//        flightBooking.setCustomer(flightCustomer);
-//        flightBooking.setFlight(flightById);
+        //find ALREADY exists flight
+        Flight flightById = flightBookingService.getFlightById(flightId);
+        FlightCustomer consumerByEmail = flightBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+        if (consumerByEmail!=null&&consumerByEmail.getId()!=0){
+            flightBooking.setCustomerId(consumerByEmail.getId());
+        }else {
+            flightCustomer.setName(hotelCustomer.getName());
+            flightCustomer.setEmail(hotelCustomer.getEmail());
+            flightCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
+            FlightCustomer flightCustomer1 = flightBookingService.createCustomer(flightCustomer);
+            flightBooking.setCustomerId(flightCustomer1.getId());
+        }
 
-//        //create flightBooking
-//        FlightBooking flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
-//
-//        //if the flight has error, it will roll back all bookings has created.
-//        if (flightBooking1==null||flightBooking.getId()==0){
-//            hotelBookingService.delete(booking1);
-//            throw new Exception(" the flight service failed ,please contact the administration!!!");
-//        }
-//        travelAgentBooking.setFlightId(flightBooking1.getId());
+
+
+        Date date = new Date();
+        Calendar c = new GregorianCalendar();
+        c.setTime(date);
+        c.add(Calendar.MONTH,200);
+        date=c.getTime();
+
+        flightBooking.setFutureDate(date);
+
+        flightBooking.setFlightId(flightById.getId());
+
+        //create flightBooking
+        FlightBooking flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
+
+        //if the flight has error, it will roll back all bookings has created.
+        if (flightBooking1==null||flightBooking1.getId()==0){
+            hotelBookingService.delete(booking1);
+            throw new Exception(" the flight service failed ,please contact the administration!!!");
+        }
+
+
+        travelAgentBooking.setFlightId(flightBooking1.getId());
         //get taxiBookingId
         Long taxiId = travelAgent.getTaxiId();
 
 
 
         Taxi taxiById = taxiBookingService.getTaxiById(taxiId);
-        TaxiCustomer consumerByEmial = taxiBookingService.getConsumerByEmial(hotelCustomer.getEmail());
-        if (consumerByEmial != null|| consumerByEmial.getId()!=0){
+        TaxiCustomer consumerByEmial = taxiBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+        if (consumerByEmial != null&& consumerByEmial.getId()!=0){
             taxiBooking.setCustomer(consumerByEmial);
         }else {
             taxiCustomer.setName(hotelCustomer.getName());
@@ -163,16 +179,14 @@ public class TravelAgentService {
             taxiBooking.setCustomer(taxiCustomer1);
         }
 
-        log.info(taxiCustomer.toString());
-        Date date = new Date();
-        Calendar c = new GregorianCalendar();
-        c.setTime(date);
-        c.add(Calendar.MONTH,200);
-        date=c.getTime();
+
+        Date date1 = new Date();
+        Calendar c1 = new GregorianCalendar();
+        c1.setTime(date);
+        c1.add(Calendar.MONTH,200);
+        date=c1.getTime();
         taxiBooking.setBookingDate(date);
-        log.info(date.toString());
         taxiBooking.setTaxi(taxiById);
-        log.info(taxiById.toString());
         //create taxiBooking
         TaxiBooking taxiBooking1 = taxiBookingService.createTaxiBooking(taxiBooking);
         if (taxiBooking1 == null || taxiBooking1.getId()==0){

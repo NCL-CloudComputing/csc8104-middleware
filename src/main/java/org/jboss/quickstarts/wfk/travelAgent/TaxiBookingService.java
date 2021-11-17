@@ -51,5 +51,5 @@ public interface TaxiBookingService {
     @GET
     @Path("/customers/email/{email}")
     @Produces(MediaType.APPLICATION_JSON)
-    TaxiCustomer getConsumerByEmial(@PathParam("email") String email);
+    TaxiCustomer getConsumerByEmail(@PathParam("email") String email);
 }
