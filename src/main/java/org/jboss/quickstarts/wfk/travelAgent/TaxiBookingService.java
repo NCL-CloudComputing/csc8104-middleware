@@ -21,7 +21,7 @@ public interface TaxiBookingService {
 
     @GET
     @Path("/taxis")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     List<Taxi> getAllTaxis();
 
     @POST

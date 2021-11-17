@@ -59,7 +59,10 @@ public class TravelAgent {
             return false;
         if (getTaxiId() != null ? !getTaxiId().equals(that.getTaxiId()) : that.getTaxiId() != null) return false;
         if (getHotelId() != null ? !getHotelId().equals(that.getHotelId()) : that.getHotelId() != null) return false;
-        return getCustomerId() != null ? getCustomerId().equals(that.getCustomerId()) : that.getCustomerId() == null;
+        if (getCustomerId() != null ? !getCustomerId().equals(that.getCustomerId()) : that.getCustomerId() != null)
+            return false;
+
+        return true;
     }
 
     @Override

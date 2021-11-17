@@ -30,14 +30,12 @@ import java.util.logging.Logger;
 @Dependent
 public class TravelAgentService {
 
-    final static String FLIGHT_BOOKING = "http://csc8104-build-stream-minghaotian-dev.apps.sandbox.x8i5.p1.openshiftapps.com/";
-    final static String TAXI_BOOKING = "http://csc8104-build-stream-chenbryan0707-dev.apps.sandbox.x8i5.p1.openshiftapps.com/";
+    final static String FLIGHT_BOOKING = "http://csc8104-build-stream-minghaotian-dev.apps.sandbox.x8i5.p1.openshiftapps.com";
+    final static String TAXI_BOOKING = "http://csc8104-build-stream-chenbryan0707-dev.apps.sandbox.x8i5.p1.openshiftapps.com";
 
     @Inject
     private @Named("logger")
     Logger log;
-
-
 
 
     @Inject
@@ -67,6 +65,12 @@ public class TravelAgentService {
 
     public TravelAgentBooking create(TravelAgent travelAgent) throws Exception {
 
+
+        Date date1 = new Date();
+        Calendar c1 = new GregorianCalendar();
+        c1.setTime(date1);
+        c1.add(Calendar.MONTH,200);
+        date1=c1.getTime();
         TravelAgentBooking travelAgentBooking= new TravelAgentBooking();
 
         travelAgentBooking.setCustomerId(travelAgent.getCustomerId());
@@ -121,79 +125,147 @@ public class TravelAgentService {
         }
 
         travelAgentBooking.setHotelId(booking1.getId());
+//        //get flightBookingId
+//        Long flightId = travelAgent.getFlightId();
+//
+//        //find ALREADY exists flight
+//        Flight flightById = flightBookingService.getFlightById(flightId);
+//        FlightCustomer consumerByEmail =null;
+//        try {
+//            consumerByEmail= flightBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+//        }catch (Exception e){
+//
+//        }
+//
+//        if (consumerByEmail!=null&&consumerByEmail.getId()!=0){
+//            flightBooking.setCustomerId(consumerByEmail.getId());
+//        }else {
+//            flightCustomer.setName(hotelCustomer.getName());
+//            flightCustomer.setEmail(hotelCustomer.getEmail());
+//            flightCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
+//            log.info("request body:"+flightCustomer.toString());
+//            FlightCustomer flightCustomer1 = flightBookingService.createCustomer(flightCustomer);
+//            flightBooking.setCustomerId(flightCustomer1.getId());
+//        }
+//
+//
+//
+//
+//
+//        flightBooking.setFutureDate("2034-07-07");
+//
+//        flightBooking.setFlightId(flightById.getId());
+//
+//        //create flightBooking
+//        log.info(flightBooking.toString());
+//        FlightBooking flightBooking1 = null;
+//        try {
+//            FlightBooking flightBooking2 =new FlightBooking();
+//
+//            flightBooking2.setFlightId(7L);
+//            flightBooking2.setCustomerId(12L);
+//            flightBooking2.setFutureDate("2022-09-08");
+//
+//            flightBooking1 = flightBookingService.createFlightBooking(flightBooking2);
+//
+//            //if the flight has error, it will roll back all bookings has created.
+//            if (flightBooking1==null||flightBooking1.getId()==0){
+//                hotelBookingService.delete(booking1);
+//
+//            }
+//        }catch (Exception e){
+//            throw new Exception(e);
+//        }
+//
+//
+//
+//        travelAgentBooking.setFlightId(flightBooking1.getId());
+
         //get flightBookingId
         Long flightId = travelAgent.getFlightId();
 
-        //find ALREADY exists flight
+
+
         Flight flightById = flightBookingService.getFlightById(flightId);
-        FlightCustomer consumerByEmail = flightBookingService.getConsumerByEmail(hotelCustomer.getEmail());
-        if (consumerByEmail!=null&&consumerByEmail.getId()!=0){
-            flightBooking.setCustomerId(consumerByEmail.getId());
+        TaxiCustomer flightConsumerByEmail =null;
+        try{
+            flightConsumerByEmail= taxiBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+        }catch (Exception e){
+        }
+
+        if (flightConsumerByEmail != null&& flightConsumerByEmail.getId()!=0){
+            taxiBooking.setCustomer(flightConsumerByEmail);
         }else {
             flightCustomer.setName(hotelCustomer.getName());
             flightCustomer.setEmail(hotelCustomer.getEmail());
             flightCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
+
+            log.info(taxiCustomer.toString());
             FlightCustomer flightCustomer1 = flightBookingService.createCustomer(flightCustomer);
             flightBooking.setCustomerId(flightCustomer1.getId());
         }
 
 
 
-        Date date = new Date();
-        Calendar c = new GregorianCalendar();
-        c.setTime(date);
-        c.add(Calendar.MONTH,200);
-        date=c.getTime();
-
-        flightBooking.setFutureDate(date);
-
+        flightBooking.setFutureDate(date1);
         flightBooking.setFlightId(flightById.getId());
-
         //create flightBooking
-        FlightBooking flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
-
-        //if the flight has error, it will roll back all bookings has created.
-        if (flightBooking1==null||flightBooking1.getId()==0){
+        FlightBooking flightBooking1 = null;
+        try{
+            flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
+            if (flightBooking1 == null || flightBooking1.getId()==0){
+                hotelBookingService.delete(booking1);
+                throw new Exception(" the flight service failed ,please contact the administration!!!");
+            }
+        }catch (Exception e){
             hotelBookingService.delete(booking1);
             throw new Exception(" the flight service failed ,please contact the administration!!!");
         }
 
 
-        travelAgentBooking.setFlightId(flightBooking1.getId());
+        travelAgentBooking.setTaxiId(flightBooking1.getId());
+
         //get taxiBookingId
         Long taxiId = travelAgent.getTaxiId();
 
 
 
         Taxi taxiById = taxiBookingService.getTaxiById(taxiId);
-        TaxiCustomer consumerByEmial = taxiBookingService.getConsumerByEmail(hotelCustomer.getEmail());
-        if (consumerByEmial != null&& consumerByEmial.getId()!=0){
-            taxiBooking.setCustomer(consumerByEmial);
+        TaxiCustomer taxiConsumerByEmail =null;
+        try{
+            taxiConsumerByEmail= taxiBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+        }catch (Exception e){
+        }
+
+        if (taxiConsumerByEmail != null&& taxiConsumerByEmail.getId()!=0){
+            taxiBooking.setCustomer(taxiConsumerByEmail);
         }else {
             taxiCustomer.setName(hotelCustomer.getName());
             taxiCustomer.setEmail(hotelCustomer.getEmail());
             taxiCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
 
-
+            log.info(taxiCustomer.toString());
             TaxiCustomer taxiCustomer1 = taxiBookingService.createCustomer(taxiCustomer);
             taxiBooking.setCustomer(taxiCustomer1);
         }
 
 
-        Date date1 = new Date();
-        Calendar c1 = new GregorianCalendar();
-        c1.setTime(date);
-        c1.add(Calendar.MONTH,200);
-        date=c1.getTime();
-        taxiBooking.setBookingDate(date);
+
+        taxiBooking.setBookingDate(date1);
         taxiBooking.setTaxi(taxiById);
         //create taxiBooking
-        TaxiBooking taxiBooking1 = taxiBookingService.createTaxiBooking(taxiBooking);
-        if (taxiBooking1 == null || taxiBooking1.getId()==0){
-            hotelBookingService.delete(booking1);
-            hotelBookingService.delete(booking1);
+        TaxiBooking taxiBooking1 = null;
+        try{
+            taxiBooking1 = taxiBookingService.createTaxiBooking(taxiBooking);
+            if (taxiBooking1 == null || taxiBooking1.getId()==0){
+                hotelBookingService.delete(booking1);
+                flightBookingService.deleteFlightBooking(flightBooking1.getId());
+                throw new Exception(" the taxi service failed ,please contact the administration!!!");
+            }
+        }catch (Exception e){
             throw new Exception(" the taxi service failed ,please contact the administration!!!");
         }
+
 
         travelAgentBooking.setTaxiId(taxiBooking1.getId());
 

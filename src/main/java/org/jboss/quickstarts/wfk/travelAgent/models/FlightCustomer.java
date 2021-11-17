@@ -14,10 +14,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Chenjie Li
@@ -27,17 +24,10 @@ import java.util.Objects;
 
 public class FlightCustomer implements Serializable {
 
-
     private Long id;
-
     private String name;
-
     private String email;
-
     private String phoneNumber;
-
-    private List<Booking> bookingList = new ArrayList<>();
-
 
     public Long getId() {
         return id;
@@ -69,13 +59,5 @@ public class FlightCustomer implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public List<Booking> getBookingList() {
-        return bookingList;
-    }
-
-    public void setBookingList(List<Booking> bookingList) {
-        this.bookingList = bookingList;
     }
 }
