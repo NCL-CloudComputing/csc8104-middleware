@@ -5,8 +5,6 @@ import java.util.Date;
 public class TaxiBooking {
 
 
-
-
     private Long id;
 
 
@@ -17,8 +15,6 @@ public class TaxiBooking {
 
 
     private Taxi taxi;
-
-
 
 
     public Long getId() {

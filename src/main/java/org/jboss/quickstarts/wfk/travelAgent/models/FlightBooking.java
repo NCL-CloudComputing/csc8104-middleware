@@ -1,13 +1,14 @@
 package org.jboss.quickstarts.wfk.travelAgent.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FlightBooking {
+public class FlightBooking implements Serializable {
 
 	private Long id;
 	private Long flightId;
 	private Long customerId;
-	private Date futureDate;
+	private String futureDate;
 
 	public Long getId() {
 		return id;
@@ -33,11 +34,21 @@ public class FlightBooking {
 		this.customerId = customerId;
 	}
 
-	public Date getFutureDate() {
+	public String getFutureDate() {
 		return futureDate;
 	}
 
-	public void setFutureDate(Date futureDate) {
+	public void setFutureDate(String futureDate) {
 		this.futureDate = futureDate;
+	}
+
+	@Override
+	public String toString() {
+		return "FlightBooking{" +
+				"id=" + id +
+				", flightId=" + flightId +
+				", customerId=" + customerId +
+				", futureDate=" + futureDate +
+				'}';
 	}
 }

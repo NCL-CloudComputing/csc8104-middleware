@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 
-@Path("/api")
+@Path("/travelagent/api")
 @Produces(MediaType.APPLICATION_JSON)
 public interface FlightBookingService {
 

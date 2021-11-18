@@ -187,14 +187,14 @@ public class TravelAgentService {
 
 
         Flight flightById = flightBookingService.getFlightById(flightId);
-        TaxiCustomer flightConsumerByEmail =null;
+        FlightCustomer flightConsumerByEmail =null;
         try{
-            flightConsumerByEmail= taxiBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+            flightConsumerByEmail= flightBookingService.getConsumerByEmail(hotelCustomer.getEmail());
         }catch (Exception e){
         }
 
         if (flightConsumerByEmail != null&& flightConsumerByEmail.getId()!=0){
-            taxiBooking.setCustomer(flightConsumerByEmail);
+            flightBooking.setCustomerId(flightConsumerByEmail.getId());
         }else {
             flightCustomer.setName(hotelCustomer.getName());
             flightCustomer.setEmail(hotelCustomer.getEmail());
@@ -207,11 +207,12 @@ public class TravelAgentService {
 
 
 
-        flightBooking.setFutureDate(date1);
+        flightBooking.setFutureDate("2023-01-01");
         flightBooking.setFlightId(flightById.getId());
         //create flightBooking
         FlightBooking flightBooking1 = null;
         try{
+            log.info(flightBooking.toString());
             flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
             if (flightBooking1 == null || flightBooking1.getId()==0){
                 hotelBookingService.delete(booking1);
@@ -219,11 +220,11 @@ public class TravelAgentService {
             }
         }catch (Exception e){
             hotelBookingService.delete(booking1);
-            throw new Exception(" the flight service failed ,please contact the administration!!!");
+            throw new Exception(" the flight service failed ,please contact the administration!!!",e);
         }
 
 
-        travelAgentBooking.setTaxiId(flightBooking1.getId());
+        travelAgentBooking.setFlightId(flightBooking1.getId());
 
         //get taxiBookingId
         Long taxiId = travelAgent.getTaxiId();
@@ -256,13 +257,16 @@ public class TravelAgentService {
         //create taxiBooking
         TaxiBooking taxiBooking1 = null;
         try{
+            log.info(taxiBooking.toString());
             taxiBooking1 = taxiBookingService.createTaxiBooking(taxiBooking);
             if (taxiBooking1 == null || taxiBooking1.getId()==0){
                 hotelBookingService.delete(booking1);
-                flightBookingService.deleteFlightBooking(flightBooking1.getId());
+                //flightBookingService.deleteFlightBooking(flightBooking1.getId());
                 throw new Exception(" the taxi service failed ,please contact the administration!!!");
             }
         }catch (Exception e){
+            hotelBookingService.delete(booking1);
+            //flightBookingService.deleteFlightBooking(flightBooking1.getId());
             throw new Exception(" the taxi service failed ,please contact the administration!!!");
         }
 
