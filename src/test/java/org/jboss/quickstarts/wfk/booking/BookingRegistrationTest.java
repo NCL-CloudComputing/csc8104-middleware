@@ -22,7 +22,10 @@
 //import org.jboss.quickstarts.wfk.contact.UniqueEmailException;
 //import org.jboss.quickstarts.wfk.customer.Customer;
 //import org.jboss.quickstarts.wfk.customer.CustomerRestService;
+//import org.jboss.quickstarts.wfk.customer.CustomerService;
 //import org.jboss.quickstarts.wfk.hotel.Hotel;
+//import org.jboss.quickstarts.wfk.hotel.HotelRestService;
+//import org.jboss.quickstarts.wfk.hotel.HotelService;
 //import org.jboss.quickstarts.wfk.travelAgent.models.Flight;
 //import org.jboss.quickstarts.wfk.util.RestServiceException;
 //import org.jboss.shrinkwrap.api.Archive;
@@ -48,8 +51,8 @@
 // * Customer creation functionality
 // * (see {@link CustomerRestService# createCustomer(Customer)}).<p/>
 // *
-// * @author balunasj
-// * @author Joshua Wilson
+//
+// * @author Chenjie Li
 // * @see CustomerRestService
 // */
 //@RunWith(Arquillian.class)
@@ -83,10 +86,10 @@
 //    }
 //
 //    @Inject
-//    HotelRestService taxiRestService;
+//    HotelRestService hotelRestService;
 //
 //    @Inject
-//    HotelService taxiService;
+//    HotelService hotelService;
 //
 //    @Inject
 //    CustomerRestService customerRestService;
@@ -101,11 +104,6 @@
 //    @Named("logger")
 //    Logger log;
 //
-//    //Set millis 1611484148085 from 2020-12-24
-//    private Date futureDate1 = new Date(1611484148085L);
-//
-//    //Set millis 1611484148085 from 2020-12-25
-//    private Date futureDate2 = new Date(1611577366406L);
 //
 //    /**
 //     * <p>
@@ -127,133 +125,43 @@
 //        log.info(" New booking was persisted and returned status " + response.getStatus());
 //    }
 //
-//    /**
-//     * <p>
-//     *     BookingTest tests invalidly create a booking record.
-//     * </p>
-//     */
-//    @Test
-//    @InSequence(2)
-//    public void testInvalidRegister() {
-//        Hotel taxi = createHotelInstanceWithId("JK66AKB",6);
-//        Customer customer = createCustomerInstanceWithId("Jane Doe", "jane@mailinator.com", "07744754955");
-//        Booking booking = createBookingInstance(customer, taxi, futureDate2);
+////    /**
+////     * <p>
+////     *     BookingTest tests invalidly create a booking record.
+////     * </p>
+////     */
+////    @Test
+////    @InSequence(2)
+////    public void testInvalidRegister() {
+////        Hotel taxi = createHotelInstanceWithId("JK66AKB",6);
+////        Customer customer = createCustomerInstanceWithId("Jane Doe", "jane@mailinator.com", "07744754955");
+////        Booking booking = createBookingInstance(customer, taxi, futureDate2);
+////
+////        try {
+////            bookingRestService.createBooking(booking);
+////            fail("Expected a RestServiceException to be thrown");
+////        } catch(RestServiceException e) {
+////            assertEquals("Unexpected response status", Response.Status.BAD_REQUEST, e.getStatus());
+////            assertEquals("Unexpected response body", 1, e.getReasons().size());
+////            log.info("Invalid booking register attempt failed with return code " + e.getStatus());
+////        }
+////    }
+////
+////
 //
-//        try {
-//            bookingRestService.createBooking(booking);
-//            fail("Expected a RestServiceException to be thrown");
-//        } catch(RestServiceException e) {
-//            assertEquals("Unexpected response status", Response.Status.BAD_REQUEST, e.getStatus());
-//            assertEquals("Unexpected response body", 1, e.getReasons().size());
-//            log.info("Invalid booking register attempt failed with return code " + e.getStatus());
-//        }
-//    }
 //
-//    /**
-//     * <p>
-//     *     BookingTest tests invalidly create a booking record with a duplicate taxi and date.
-//     * </p>
-//     */
-//    @Test
-//    @InSequence(3)
-//    public void testDuplicateHotelAndDateCombination() {
-//        //find a existed customer
-//        List<Customer> customers = customerService.findAllCustomers();
-//        Customer customer = customers.get(0);
-//        //find a existed taxi
-//        List<Hotel> taxis = taxiService.findAllHotels();
-//        Hotel taxi = taxis.get(0);
-//        //create a booking with a future date.
-//        Booking booking = createBookingInstance(customer, taxi, futureDate1);
 //
-//        /*//create the booking first time
-//        bookingRestService.createBooking(booking);*/
-//
-//        try {
-//            //create the booking first time
-//            bookingRestService.createBooking(booking);
-//            fail("Expected a UniqueBookingException to be thrown");
-//        } catch(RestServiceException e) {
-//            // the status should be same with the one in class BookingRestService
-//            assertEquals("Unexpected response status",
-//                    Response.Status.CONFLICT, e.getStatus());
-//            assertEquals("Unexpected response body", 1,
-//                    e.getReasons().size());
-//            log.info("Invalid booking register attempt failed with return code " + e.getStatus());
-//        }
-//
-//    }
-//
-//    /**
-//     * <p> BookingTest test booking creation with non-existed taxi, this method should throw @see HotelNotFoundException </p>
-//     * @return void
-//     */
-//    @Test
-//    @InSequence(4)
-//    public void testHotelNotExist() {
-//        //create a new taxi
-//        Hotel taxi = createHotelInstanceWithId("AK66KKL",16);
-//
-//        //find a existed customer
-//        List<Customer> customers = customerService.findAllCustomers();
-//        Customer customer = customers.get(0);
-//        Booking booking = createBookingInstance(customer, taxi, futureDate2);
-//
-//        try {
-//            bookingRestService.createBooking(booking);
-//            fail("Expected a HotelNotFoundException to be thrown");
-//        } catch(RestServiceException e) {
-//            // the status should be same with the one in class BookingRestService
-//            assertEquals("Unexpected response status",
-//                    Response.Status.BAD_REQUEST, e.getStatus());
-//            assertTrue("Unexpected error. Should be HotelNotFoundException",
-//                    e.getCause() instanceof HotelNotFoundException);
-//            assertEquals("Unexpected response body", 1,
-//                    e.getReasons().size());
-//            log.info("Invalid booking register attempt failed with return code " + e.getStatus());
-//        }
-//    }
-//
-//    /**
-//     * <p>
-//     *     BookingTest tests invalidly create a booking record with a non-existed customer.
-//     * </p>
-//     */
-//    @Test
-//    @InSequence(5)
-//    public void testCustomerNotExist() {
-//        // create a new customer doesn't exist
-//        Customer customer = createCustomerInstanceWithId("Jane Doe", "jane@mailinator.com", "07744754955");
-//        //find a existed taxi
-//        List<Hotel> taxis = taxiService.findAllHotels();
-//        Hotel taxi = taxis.get(0);
-//        Booking booking = createBookingInstance(customer, taxi, futureDate2);
-//
-//        try {
-//            bookingRestService.createBooking(booking);
-//            fail("Expected a CustomerNotFoundException to be thrown");
-//        } catch(RestServiceException e) {
-//            // the status should be same with the one in class BookingRestService
-//            assertEquals("Unexpected response status",
-//                    Response.Status.BAD_REQUEST, e.getStatus());
-//            assertTrue("Unexpected error. Should be CustomerNotFoundException",
-//                    e.getCause() instanceof CustomerNotFoundException);
-//            assertEquals("Unexpected response body", 1,
-//                    e.getReasons().size());
-//            log.info("Invalid booking register attempt failed with return code " + e.getStatus());
-//        }
-//    }
 //
 //    /**
 //     * <p> BookingTest </p>
 //     * @param customer, taxi, bookingDate]
 //     * @return org.jboss.quickstarts.wfk.booking.Booking
 //     */
-//    private Booking createBookingInstance(Customer customer, Hotel taxi, Date bookingDate ){
+//    private Booking createBookingInstance(Customer customer, Hotel hotel, Date bookingDate ){
 //        Booking booking = new Booking();
 //        booking.setCustomer(customer);
-//        booking.setHotel(taxi);
-//        booking.setBookingDate(bookingDate);
+//        booking.setHotel(hotel);
+//        booking.setFutureDate(bookingDate);
 //        return booking;
 //    }
 //

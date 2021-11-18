@@ -182,49 +182,49 @@ public class TravelAgentService {
 //        travelAgentBooking.setFlightId(flightBooking1.getId());
 
         //get flightBookingId
-        Long flightId = travelAgent.getFlightId();
-
-
-
-        Flight flightById = flightBookingService.getFlightById(flightId);
-        FlightCustomer flightConsumerByEmail =null;
-        try{
-            flightConsumerByEmail= flightBookingService.getConsumerByEmail(hotelCustomer.getEmail());
-        }catch (Exception e){
-        }
-
-        if (flightConsumerByEmail != null&& flightConsumerByEmail.getId()!=0){
-            flightBooking.setCustomerId(flightConsumerByEmail.getId());
-        }else {
-            flightCustomer.setName(hotelCustomer.getName());
-            flightCustomer.setEmail(hotelCustomer.getEmail());
-            flightCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
-
-            log.info(taxiCustomer.toString());
-            FlightCustomer flightCustomer1 = flightBookingService.createCustomer(flightCustomer);
-            flightBooking.setCustomerId(flightCustomer1.getId());
-        }
-
-
-
-        flightBooking.setFutureDate("2023-01-01");
-        flightBooking.setFlightId(flightById.getId());
-        //create flightBooking
-        FlightBooking flightBooking1 = null;
-        try{
-            log.info(flightBooking.toString());
-            flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
-            if (flightBooking1 == null || flightBooking1.getId()==0){
-                hotelBookingService.delete(booking1);
-                throw new Exception(" the flight service failed ,please contact the administration!!!");
-            }
-        }catch (Exception e){
-            hotelBookingService.delete(booking1);
-            throw new Exception(" the flight service failed ,please contact the administration!!!",e);
-        }
-
-
-        travelAgentBooking.setFlightId(flightBooking1.getId());
+//        Long flightId = travelAgent.getFlightId();
+//
+//
+//
+//        Flight flightById = flightBookingService.getFlightById(flightId);
+//        FlightCustomer flightConsumerByEmail =null;
+//        try{
+//            flightConsumerByEmail= flightBookingService.getConsumerByEmail(hotelCustomer.getEmail());
+//        }catch (Exception e){
+//        }
+//
+//        if (flightConsumerByEmail != null&& flightConsumerByEmail.getId()!=0){
+//            flightBooking.setCustomerId(flightConsumerByEmail.getId());
+//        }else {
+//            flightCustomer.setName(hotelCustomer.getName());
+//            flightCustomer.setEmail(hotelCustomer.getEmail());
+//            flightCustomer.setPhoneNumber(hotelCustomer.getPhoneNumber());
+//
+//            log.info(taxiCustomer.toString());
+//            FlightCustomer flightCustomer1 = flightBookingService.createCustomer(flightCustomer);
+//            flightBooking.setCustomerId(flightCustomer1.getId());
+//        }
+//
+//
+//
+//        flightBooking.setFutureDate("2023-01-01");
+//        flightBooking.setFlightId(flightById.getId());
+//        //create flightBooking
+//        FlightBooking flightBooking1 = null;
+//        try{
+//            log.info(flightBooking.toString());
+//            flightBooking1 = flightBookingService.createFlightBooking(flightBooking);
+//            if (flightBooking1 == null || flightBooking1.getId()==0){
+//                hotelBookingService.delete(booking1);
+//                throw new Exception(" the flight service failed ,please contact the administration!!!");
+//            }
+//        }catch (Exception e){
+//            hotelBookingService.delete(booking1);
+//            throw new Exception(" the flight service failed ,please contact the administration!!!",e);
+//        }
+//
+//
+//        travelAgentBooking.setFlightId(flightBooking1.getId());
 
         //get taxiBookingId
         Long taxiId = travelAgent.getTaxiId();
